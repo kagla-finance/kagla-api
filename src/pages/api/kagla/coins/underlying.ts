@@ -23,8 +23,6 @@ import { asHandler } from 'src/utils/api'
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-const handler = asHandler(() =>
-  registryService().listUnderlyingCoins(['name', 'symbol', 'decimals']),
-)
+const handler = asHandler(registryService().listUnderlyingCoins)
 
 export default handler

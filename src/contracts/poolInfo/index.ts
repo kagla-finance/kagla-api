@@ -187,12 +187,12 @@ export class PoolInfoService implements IPoolInfoService {
   }
 
   getTVL: IPoolInfoService['getTVL'] = async () => {
-    const [{ blockNumber, pools }, lpTokens, assetPrices] = await Promise.all([
-      this.listPools(),
-      this.registry.listLPTokens([]),
-      this.price.getAssetPricesInUSD(),
-    ])
-    const lpTokenAddresses = lpTokens.map(({ address }) => address)
+    const [{ blockNumber, pools }, lpTokenAddresses, assetPrices] =
+      await Promise.all([
+        this.listPools(),
+        this.registry.listLPTokenAddresses(),
+        this.price.getAssetPricesInUSD(),
+      ])
     const tvl = calculatePoolsTVL(pools, lpTokenAddresses, assetPrices)
     return {
       blockNumber: blockNumber.toString(),
