@@ -13,6 +13,7 @@ export type IRegistryService = {
   listUnderlyingCoinAddresses: () => Promise<string[]>
   listUnderlyingCoins: (fileds: ERC20ViewFunction[]) => Promise<Coin[]>
   listLPTokens: (fileds: ERC20ViewFunction[]) => Promise<Coin[]>
+  listLPTokenAddresses: () => Promise<string[]>
   listPoolAddresses: () => Promise<string[]>
   getGauges: (
     poolAddress: string,
@@ -77,6 +78,21 @@ export class RegistryService implements IRegistryService {
           .filter((a) => !equals(a, ethers.constants.AddressZero)),
       )
     }
+
+  listLPTokenAddresses: IRegistryService['listLPTokenAddresses'] = async () => {
+    const { listPoolAddresses, multiCall } = this
+    const registry = await this.registry()
+
+    const poolAddresses = await listPoolAddresses()
+    const { data } = await multiCall.callViewFunctionsByArgs({
+      contract: registry,
+      viewFuntions: ['get_lp_token'],
+      argsMaps: poolAddresses.map((address) => ({
+        get_lp_token: [address] as [string],
+      })),
+    })
+    return Object.values(data).flatMap((datum) => datum['get_lp_token'])
+  }
 
   listCoins: IRegistryService['listCoins'] = async (fileds) => {
     const { listCoinAddresses, erc20MultiCall } = this
