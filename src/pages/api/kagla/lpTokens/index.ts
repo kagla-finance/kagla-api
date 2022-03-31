@@ -23,8 +23,6 @@ import { asHandler } from 'src/utils/api'
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-const handler = asHandler(() =>
-  registryService().listLPTokens(['name', 'symbol', 'decimals']),
-)
+const handler = asHandler(registryService().listLPTokens)
 
 export default handler

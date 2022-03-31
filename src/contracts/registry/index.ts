@@ -8,17 +8,19 @@ import { IMultiCallService } from '../multiCall'
 import { Registry__factory } from '../__generated__/factories/Registry__factory'
 
 export type IRegistryService = {
+  listCoins: () => Promise<Coin[]>
+  listUnderlyingCoins: () => Promise<Coin[]>
+  listLPTokens: () => Promise<Coin[]>
   listCoinAddresses: () => Promise<string[]>
-  listCoins: (fileds: ERC20ViewFunction[]) => Promise<Coin[]>
   listUnderlyingCoinAddresses: () => Promise<string[]>
-  listUnderlyingCoins: (fileds: ERC20ViewFunction[]) => Promise<Coin[]>
-  listLPTokens: (fileds: ERC20ViewFunction[]) => Promise<Coin[]>
   listLPTokenAddresses: () => Promise<string[]>
   listPoolAddresses: () => Promise<string[]>
   getGauges: (
     poolAddress: string,
   ) => Promise<{ address: string; type: string }[]>
 }
+
+const COINS_FIELDS: ERC20ViewFunction[] = ['name', 'symbol', 'decimals']
 
 export class RegistryService implements IRegistryService {
   private constructor(
@@ -94,44 +96,38 @@ export class RegistryService implements IRegistryService {
     return Object.values(data).flatMap((datum) => datum['get_lp_token'])
   }
 
-  listCoins: IRegistryService['listCoins'] = async (fileds) => {
+  listCoins: IRegistryService['listCoins'] = async () => {
     const { listCoinAddresses, erc20MultiCall } = this
     const coinAddresses = await listCoinAddresses()
-    const { data: coins } = await erc20MultiCall.view(coinAddresses, fileds)
+    const { data: coins } = await erc20MultiCall.view(
+      coinAddresses,
+      COINS_FIELDS,
+    )
     return Object.entries(coins).map(([address, coin]) => ({
       address,
       ...coin,
     }))
   }
 
-  listUnderlyingCoins: IRegistryService['listUnderlyingCoins'] = async (
-    fileds,
-  ) => {
+  listUnderlyingCoins: IRegistryService['listUnderlyingCoins'] = async () => {
     const { erc20MultiCall } = this
     const coinAddresses = await this.listUnderlyingCoinAddresses()
-    const { data: coins } = await erc20MultiCall.view(coinAddresses, fileds)
+    const { data: coins } = await erc20MultiCall.view(
+      coinAddresses,
+      COINS_FIELDS,
+    )
     return Object.entries(coins).map(([address, coin]) => ({
       address,
       ...coin,
     }))
   }
 
-  listLPTokens: IRegistryService['listCoins'] = async (fileds) => {
-    const { listPoolAddresses, multiCall, erc20MultiCall } = this
-    const registry = await this.registry()
-
-    const poolAddresses = await listPoolAddresses()
-    const { data } = await multiCall.callViewFunctionsByArgs({
-      contract: registry,
-      viewFuntions: ['get_lp_token'],
-      argsMaps: poolAddresses.map((address) => ({
-        get_lp_token: [address] as [string],
-      })),
-    })
-    const lpTokenAddresses = Object.values(data).flatMap(
-      (datum) => datum['get_lp_token'],
+  listLPTokens: IRegistryService['listLPTokens'] = async () => {
+    const lpTokenAddresses = await this.listLPTokenAddresses()
+    const { data: coins } = await this.erc20MultiCall.view(
+      lpTokenAddresses,
+      COINS_FIELDS,
     )
-    const { data: coins } = await erc20MultiCall.view(lpTokenAddresses, fileds)
     return Object.entries(coins).map(([address, coin]) => ({
       address,
       ...coin,
