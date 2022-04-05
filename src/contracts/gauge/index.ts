@@ -166,15 +166,24 @@ export class GaugeService implements IGaugeService {
             ...res.stakedBalance,
             [response.lp_token]: response.balanceOf.toString(),
           },
+          claimableAmounts: {
+            ...res.claimableAmounts,
+            [address]: response.claimable_tokens.toString(),
+          },
           claimableAmount: response.claimable_tokens.add(res.claimableAmount),
         }
       },
-      { stakedBalance: {}, claimableAmount: BigNumber.from('0') },
+      {
+        stakedBalance: {},
+        claimableAmounts: {},
+        claimableAmount: BigNumber.from('0'),
+      },
     )
     return {
       blockNumber: gaugeRes.blockNumber.toString(),
       data: {
         stakedBalance: result.stakedBalance,
+        claimableAmounts: result.claimableAmounts,
         claimableAmount: result.claimableAmount.toString(),
       },
     }
