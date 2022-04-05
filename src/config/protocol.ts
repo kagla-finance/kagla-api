@@ -33,7 +33,7 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
       addressProvider: '0x762b149eA23070d6F021F70CB8877d2248278855',
       poolInfo: '0x64Aa34dec0eB81B21e4869Ac942A60bd21BebE87',
       gaugeController: '0xBEDcfA1EB6cf39dd829207147692C0eaeCe32065',
-      minter: '',
+      minter: '0x5dE0CF708F7753F176F1d23229c0EE50a23872f7',
       multiCall: '0xB6E580BF400d8DEb17dacDD67734d399367e7f94',
       diaOracle: '0xCe784F99f87dBa11E0906e2fE954b08a8cc9815d',
     },
