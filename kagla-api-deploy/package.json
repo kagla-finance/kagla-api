@@ -12,6 +12,7 @@
     "deploy": "cdk deploy"
   },
   "devDependencies": {
+    "@aws-cdk/assert": "1.152.0",
     "@aws-cdk/aws-cloudfront": "1.152.0",
     "@aws-cdk/aws-ecs": "1.152.0",
     "@aws-cdk/aws-ecs-patterns": "^1.152.0",
