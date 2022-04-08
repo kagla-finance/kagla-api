@@ -17,6 +17,8 @@ jobs:
         uses: actions/setup-node@v2.1.5
         with:
           node-version: 14.x
+      - id: install-aws-cli
+        uses: unfor19/install-aws-cli-action@v1
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -37,6 +39,9 @@ jobs:
           cd kagla-api-deploy
           yarn
           yarn deploy:astar
+      - name: clear cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} --paths "/*"
 
 env:
   AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
