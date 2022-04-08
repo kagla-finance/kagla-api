@@ -6,8 +6,9 @@ on:
       - main
 
 jobs:
-  build:
+  deployment:
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
@@ -41,7 +42,7 @@ jobs:
           yarn deploy:astar
       - name: clear cache
         run: |
-          aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} --paths "/*"
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
       - name: Slack Notification on Success
         if: ${{ success() }}
         uses: rtCamp/action-slack-notify@v2
@@ -57,8 +58,7 @@ jobs:
           SLACK_COLOR: danger
 
 env:
-  AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID}}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
