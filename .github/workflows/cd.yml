@@ -32,7 +32,7 @@ jobs:
       - name: workaround for detached HEAD
         run: |
           git checkout ${GITHUB_HEAD_REF} || git checkout -b ${GITHUB_HEAD_REF} && git pull
-      - name: check types
+      - name: deploy
         run: |
           cd kagla-api-deploy
           yarn
