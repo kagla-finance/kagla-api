@@ -66,3 +66,36 @@ export type StakingData = {
   claimableAmounts: Balance
   claimableAmount: string
 }
+
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    GaugeAllocation:
+ *      type: object
+ *      properties:
+ *        total:
+ *          type: string
+ *        allocation:
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              gauge:
+ *                type: string
+ *              ratio:
+ *                type: number
+ *            required:
+ *              - gauge
+ *              - weight
+ *      required:
+ *        - total
+ *        - allocation
+ */
+export type GaugeAllocation = {
+  total: string
+  allocation: {
+    gauge: string
+    ratio: number
+  }[]
+}

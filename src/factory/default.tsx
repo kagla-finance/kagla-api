@@ -32,6 +32,11 @@ export const poolInfoService = (chainId?: ChainId) => {
   return service
 }
 
+export const gaugeService = (chainId?: ChainId) => {
+  const params = defaultParameters(chainId)
+  return GaugeService.new(params)
+}
+
 export const registryService = (chainId?: ChainId) => {
   const params = defaultParameters(chainId)
 
