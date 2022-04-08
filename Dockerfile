@@ -9,4 +9,5 @@ WORKDIR /app
 COPY . /app
 RUN yarn
 RUN yarn build
-CMD ["yarn", "start"]
+ENV CHAIN_ID=${CHAIN_ID}
+CMD ["yarn", "start:docker"]

@@ -677,6 +677,12 @@ Object {
       "Properties": Object {
         "ContainerDefinitions": Array [
           Object {
+            "Environment": Array [
+              Object {
+                "Name": "CHAIN_ID",
+                "Value": "592",
+              },
+            ],
             "Essential": true,
             "Image": Object {
               "Fn::Join": Array [
@@ -693,7 +699,7 @@ Object {
                   Object {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/aws-cdk/assets:6d024934aac9d9df493d69bfc9265847d99e6987284b95b808d05fefce1a2574",
+                  "/aws-cdk/assets:180e367518f88e3a1b74c4d1ddfe5886b3279ecfcbee2a9a68ee05aecb5a8499",
                 ],
               ],
             },

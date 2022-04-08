@@ -9,6 +9,8 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
+    "deploy:shiden": "cdk deploy -c network=shiden",
+    "deploy:astar": "cdk deploy -c network=astar",
     "deploy": "cdk deploy"
   },
   "devDependencies": {

@@ -5,7 +5,7 @@ import {
 import { ContainerImage } from '@aws-cdk/aws-ecs'
 import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns'
 import { Construct, Duration, Stack, StackProps } from '@aws-cdk/core'
-import { appName, network } from './config'
+import { appName, chainId, network } from './config'
 
 export class KaglaApiDeployStack extends Stack {
   constructor(scope: Construct, id: string, nw: network, props?: StackProps) {
@@ -20,14 +20,17 @@ export class KaglaApiDeployStack extends Stack {
         taskImageOptions: {
           image: ContainerImage.fromAsset('../'),
           containerPort: 3000,
+          environment: {
+            CHAIN_ID: chainId(nw).toString(),
+          },
         },
       },
     )
     const autoScaling = service.service.autoScaleTaskCount({ maxCapacity: 3 })
     autoScaling.scaleOnCpuUtilization('scale-on-cpu-utilization', {
       targetUtilizationPercent: 80,
-      scaleInCooldown: Duration.seconds(60),
-      scaleOutCooldown: Duration.seconds(60),
+      scaleInCooldown: Duration.minutes(1),
+      scaleOutCooldown: Duration.minutes(1),
     })
     new CloudFrontWebDistribution(this, `web-distribution-${appName}-${nw}`, {
       defaultRootObject: '',
