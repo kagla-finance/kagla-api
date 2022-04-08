@@ -19,10 +19,16 @@ export class KaglaApiDeployStack extends Stack {
         cpu: 512,
         taskImageOptions: {
           image: ContainerImage.fromAsset('../'),
-          containerPort: 3001,
+          containerPort: 3000,
         },
       },
     )
+    const autoScaling = service.service.autoScaleTaskCount({ maxCapacity: 3 })
+    autoScaling.scaleOnCpuUtilization('scale-on-cpu-utilization', {
+      targetUtilizationPercent: 80,
+      scaleInCooldown: Duration.seconds(60),
+      scaleOutCooldown: Duration.seconds(60),
+    })
     new CloudFrontWebDistribution(this, `web-distribution-${appName}-${nw}`, {
       defaultRootObject: '',
       originConfigs: [
