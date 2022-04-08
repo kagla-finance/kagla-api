@@ -46,6 +46,7 @@ export class ERC20MultiCallService implements IERC20MultiCallService {
       targetAddresses: erc20Addresses,
       iContract: iERC20,
       viewFuntions: fields,
+      resultsMapper: (res: any, fn) => ({ [fn]: res[0] }),
     })
     return erc20MCRes
   }

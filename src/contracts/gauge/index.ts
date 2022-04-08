@@ -153,6 +153,7 @@ export class GaugeService implements IGaugeService {
       targetAddresses: gaugeAddresses,
       viewFuntions: ['lp_token', 'balanceOf', 'claimable_tokens'],
       argMap: { balanceOf: [owner], claimable_tokens: [owner] },
+      resultsMapper: (res, fn) => ({ [fn]: res[0] }),
     })
     const result = gaugeAddresses.reduce(
       (res, address) => {
