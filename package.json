@@ -7,6 +7,7 @@
     "dev:testnet": "cross-env CHAIN_ID=336 yarn dev",
     "build": "next build",
     "start": "next start",
+    "start:docker": "cross-env CHAIN_ID=${CHAIN_ID} next start",
     "lint": "next lint",
     "test": "jest --watch",
     "test:once": "jest",
