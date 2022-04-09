@@ -1,13 +1,31 @@
-export const enum network {
-  ASTAR = 'astar',
-  SHIDEN = 'shiden',
-}
-
-export const chainId = (nw: network) => {
-  if (nw === network.ASTAR) {
-    return 592
-  }
-  return 336
-}
-
 export const appName = 'kagla-api'
+
+export const NETWORK = ['astar', 'shiden'] as const
+
+export type Network = typeof NETWORK[number]
+
+export const isValidNetwork = (arg: any): arg is Network =>
+  NETWORK.includes(arg)
+
+type EnvVars = {
+  chainId: number
+  rootDomainName?: string
+  alias?: {
+    domainName: string
+    certificateArnParameterName: string
+  }
+}
+
+export const ENV_CONFIG: Record<Network, EnvVars> = {
+  astar: {
+    chainId: 592,
+    rootDomainName: 'kagla.finance',
+    alias: {
+      domainName: 'api.kagla.finance',
+      certificateArnParameterName: '/kagla/certificate/api',
+    },
+  },
+  shiden: {
+    chainId: 336,
+  },
+}
