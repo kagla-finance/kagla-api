@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SQS Queue Created 1`] = `
+exports[`kagla-api-deploy Api 1`] = `
 Object {
   "Outputs": Object {
     "kaglaapiastarserviceLoadBalancerDNS897BCB0E": Object {
@@ -699,7 +699,7 @@ Object {
                   Object {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/aws-cdk/assets:180e367518f88e3a1b74c4d1ddfe5886b3279ecfcbee2a9a68ee05aecb5a8499",
+                  "/aws-cdk/assets:63f8033d269d29ea4eb4b44aab4f8db5883e3a073b69ba09c951adf36c3adbbd",
                 ],
               ],
             },
@@ -903,6 +903,23 @@ Object {
         },
       },
       "Type": "AWS::CloudFront::Distribution",
+    },
+  },
+}
+`;
+
+exports[`kagla-api-deploy Certificate 1`] = `
+Object {
+  "Resources": Object {
+    "Certificate": Object {
+      "Properties": Object {
+        "DomainName": "test.example.com",
+        "SubjectAlternativeNames": Array [
+          "*.test.example.com",
+        ],
+        "ValidationMethod": "DNS",
+      },
+      "Type": "AWS::CertificateManager::Certificate",
     },
   },
 }
