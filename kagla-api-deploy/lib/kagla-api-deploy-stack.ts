@@ -5,10 +5,18 @@ import {
 import { ContainerImage } from '@aws-cdk/aws-ecs'
 import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns'
 import { Construct, Duration, Stack, StackProps } from '@aws-cdk/core'
-import { appName, chainId, network } from './config'
+import { appName, Network } from './config'
 
+type KaglaApiDeployStackProps = {
+  nw: Network
+  chainId: number
+}
 export class KaglaApiDeployStack extends Stack {
-  constructor(scope: Construct, id: string, nw: network, props?: StackProps) {
+  constructor(
+    scope: Construct,
+    id: string,
+    { nw, chainId, ...props }: StackProps & KaglaApiDeployStackProps,
+  ) {
     super(scope, id, props)
     const service = new ApplicationLoadBalancedFargateService(
       this,
@@ -20,9 +28,7 @@ export class KaglaApiDeployStack extends Stack {
         taskImageOptions: {
           image: ContainerImage.fromAsset('../'),
           containerPort: 3000,
-          environment: {
-            CHAIN_ID: chainId(nw).toString(),
-          },
+          environment: { CHAIN_ID: `${chainId}` },
         },
       },
     )
@@ -41,12 +47,7 @@ export class KaglaApiDeployStack extends Stack {
             originProtocolPolicy: OriginProtocolPolicy.HTTP_ONLY,
             originKeepaliveTimeout: Duration.minutes(1),
           },
-          behaviors: [
-            {
-              isDefaultBehavior: true,
-              compress: true,
-            },
-          ],
+          behaviors: [{ isDefaultBehavior: true, compress: true }],
         },
       ],
     })
