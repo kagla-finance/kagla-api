@@ -1,14 +1,29 @@
+import { Certificate } from '@aws-cdk/aws-certificatemanager'
 import {
   CloudFrontWebDistribution,
   OriginProtocolPolicy,
+  ViewerCertificate,
 } from '@aws-cdk/aws-cloudfront'
 import { ContainerImage } from '@aws-cdk/aws-ecs'
 import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns'
+import { StringParameter } from '@aws-cdk/aws-ssm'
 import { Construct, Duration, Stack, StackProps } from '@aws-cdk/core'
-import { appName, chainId, network } from './config'
+import { appName, Network } from './config'
 
+type KaglaApiDeployStackProps = {
+  nw: Network
+  chainId: number
+  alias?: {
+    domainName: string
+    certificateArnParameterName: string
+  }
+}
 export class KaglaApiDeployStack extends Stack {
-  constructor(scope: Construct, id: string, nw: network, props?: StackProps) {
+  constructor(
+    scope: Construct,
+    id: string,
+    { nw, chainId, alias, ...props }: StackProps & KaglaApiDeployStackProps,
+  ) {
     super(scope, id, props)
     const service = new ApplicationLoadBalancedFargateService(
       this,
@@ -20,9 +35,7 @@ export class KaglaApiDeployStack extends Stack {
         taskImageOptions: {
           image: ContainerImage.fromAsset('../'),
           containerPort: 3000,
-          environment: {
-            CHAIN_ID: chainId(nw).toString(),
-          },
+          environment: { CHAIN_ID: `${chainId}` },
         },
       },
     )
@@ -34,6 +47,7 @@ export class KaglaApiDeployStack extends Stack {
     })
     new CloudFrontWebDistribution(this, `web-distribution-${appName}-${nw}`, {
       defaultRootObject: '',
+      viewerCertificate: alias && viewerCertificate(this, alias),
       originConfigs: [
         {
           customOriginSource: {
@@ -41,14 +55,28 @@ export class KaglaApiDeployStack extends Stack {
             originProtocolPolicy: OriginProtocolPolicy.HTTP_ONLY,
             originKeepaliveTimeout: Duration.minutes(1),
           },
-          behaviors: [
-            {
-              isDefaultBehavior: true,
-              compress: true,
-            },
-          ],
+          behaviors: [{ isDefaultBehavior: true, compress: true }],
         },
       ],
     })
   }
+}
+
+const viewerCertificate = (
+  stack: Stack,
+  alias: { domainName: string; certificateArnParameterName: string },
+) => {
+  const certificateParam = StringParameter.fromStringParameterAttributes(
+    stack,
+    'parameter-certificate',
+    { parameterName: alias.certificateArnParameterName },
+  )
+  return ViewerCertificate.fromAcmCertificate(
+    Certificate.fromCertificateArn(
+      stack,
+      `cloudfront-certificate`,
+      certificateParam.stringValue,
+    ),
+    { aliases: [alias.domainName] },
+  )
 }
