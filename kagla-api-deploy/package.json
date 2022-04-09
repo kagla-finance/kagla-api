@@ -9,8 +9,8 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy:shiden": "cdk deploy -c network=shiden",
-    "deploy:astar": "cdk deploy -c network=astar",
+    "deploy:shiden": "cdk deploy -c network=shiden --all",
+    "deploy:astar": "cdk deploy -c network=astar --all",
     "deploy": "cdk deploy"
   },
   "devDependencies": {
@@ -19,6 +19,7 @@
     "@aws-cdk/aws-cloudfront": "1.152.0",
     "@aws-cdk/aws-ecs": "1.152.0",
     "@aws-cdk/aws-ecs-patterns": "^1.152.0",
+    "@aws-cdk/aws-ssm": "1.152.0",
     "@aws-cdk/core": "1.152.0",
     "@types/jest": "^26.0.10",
     "@types/node": "10.17.27",

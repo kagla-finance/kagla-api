@@ -10,13 +10,15 @@ if (!isValidNetwork(nw)) {
   throw new Error(`invalid network: ${nw}`)
 }
 
-const { chainId, domainName } = ENV_CONFIG[nw]
-if (domainName) {
+const { chainId, rootDomainName, alias } = ENV_CONFIG[nw]
+if (rootDomainName) {
   new KaglaApiCertificateStack(app, `KaglaApiCertificateStack-${nw}`, {
-    domainName,
+    domainName: rootDomainName,
   })
 }
+
 new KaglaApiDeployStack(app, `KaglaApiDeployStack-${nw}`, {
   nw,
   chainId,
+  alias,
 })

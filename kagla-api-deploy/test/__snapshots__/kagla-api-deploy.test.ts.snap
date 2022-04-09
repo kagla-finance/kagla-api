@@ -28,6 +28,12 @@ Object {
       },
     },
   },
+  "Parameters": Object {
+    "parametercertificateParameter": Object {
+      "Default": "/kagla/certificate/api",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
   "Resources": Object {
     "EcsDefaultClusterMnL3mNNYN926A5246": Object {
       "Type": "AWS::ECS::Cluster",
@@ -699,7 +705,7 @@ Object {
                   Object {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/aws-cdk/assets:63f8033d269d29ea4eb4b44aab4f8db5883e3a073b69ba09c951adf36c3adbbd",
+                  "/aws-cdk/assets:14d22e090f1de2068a13b75a7c36455ee795de1675ad7ba34e87d49d8b957f9f",
                 ],
               ],
             },
@@ -850,6 +856,9 @@ Object {
     "webdistributionkaglaapiastarCFDistribution21CA9586": Object {
       "Properties": Object {
         "DistributionConfig": Object {
+          "Aliases": Array [
+            "api.kagla.finance",
+          ],
           "DefaultCacheBehavior": Object {
             "AllowedMethods": Array [
               "GET",
@@ -898,7 +907,10 @@ Object {
           ],
           "PriceClass": "PriceClass_100",
           "ViewerCertificate": Object {
-            "CloudFrontDefaultCertificate": true,
+            "AcmCertificateArn": Object {
+              "Ref": "parametercertificateParameter",
+            },
+            "SslSupportMethod": "sni-only",
           },
         },
       },
