@@ -1,6 +1,8 @@
+import { Certificate } from '@aws-cdk/aws-certificatemanager'
 import {
   CloudFrontWebDistribution,
   OriginProtocolPolicy,
+  ViewerCertificate,
 } from '@aws-cdk/aws-cloudfront'
 import { ContainerImage } from '@aws-cdk/aws-ecs'
 import { ApplicationLoadBalancedFargateService } from '@aws-cdk/aws-ecs-patterns'
@@ -10,12 +12,16 @@ import { appName, Network } from './config'
 type KaglaApiDeployStackProps = {
   nw: Network
   chainId: number
+  alias?: {
+    domainName: string
+    certificateArn: string
+  }
 }
 export class KaglaApiDeployStack extends Stack {
   constructor(
     scope: Construct,
     id: string,
-    { nw, chainId, ...props }: StackProps & KaglaApiDeployStackProps,
+    { nw, chainId, alias, ...props }: StackProps & KaglaApiDeployStackProps,
   ) {
     super(scope, id, props)
     const service = new ApplicationLoadBalancedFargateService(
@@ -40,6 +46,7 @@ export class KaglaApiDeployStack extends Stack {
     })
     new CloudFrontWebDistribution(this, `web-distribution-${appName}-${nw}`, {
       defaultRootObject: '',
+      viewerCertificate: alias && viewerCertificate(this, alias),
       originConfigs: [
         {
           customOriginSource: {
@@ -53,3 +60,16 @@ export class KaglaApiDeployStack extends Stack {
     })
   }
 }
+
+const viewerCertificate = (
+  stack: Stack,
+  alias: { domainName: string; certificateArn: string },
+) =>
+  ViewerCertificate.fromAcmCertificate(
+    Certificate.fromCertificateArn(
+      stack,
+      `cloudfront-certificate`,
+      alias.certificateArn,
+    ),
+    { aliases: [alias.domainName] },
+  )

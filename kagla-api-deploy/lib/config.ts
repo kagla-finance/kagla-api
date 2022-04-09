@@ -9,13 +9,22 @@ export const isValidNetwork = (arg: any): arg is Network =>
 
 type EnvVars = {
   chainId: number
-  domainName?: string
+  rootDomainName?: string
+  alias?: {
+    domainName: string
+    certificateArn: string
+  }
 }
 
 export const ENV_CONFIG: Record<Network, EnvVars> = {
   astar: {
     chainId: 592,
-    domainName: 'kagla.finance',
+    rootDomainName: 'kagla.finance',
+    alias: {
+      domainName: 'api.kagla.finance',
+      certificateArn:
+        'arn:aws:acm:us-east-1:495476032358:certificate/bbe42d2e-a784-4742-8612-557818096901',
+    },
   },
   shiden: {
     chainId: 336,
