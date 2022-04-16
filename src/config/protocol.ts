@@ -25,7 +25,7 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
       minter: '0x210c5BE93182d02A666392996f62244001e6E04d',
       multiCall: '0x7D6046156df81EF335E7e765d3bc714960B73207',
     },
-    rpcUrls: ['https://rpc.astar.network:8545'],
+    rpcUrls: ['https://evm.astar.network'],
     storageEndpoint: 'https://kagla-stats-astar.s3.amazonaws.com',
   },
   [CHAIN_ID.shiden]: {
