@@ -10,6 +10,7 @@ import {
   PoolUnderlyingCoin,
 } from 'src/models/pool'
 import { IStatsService } from 'src/storage/Stats'
+import { filterFalsy } from 'src/utils/array'
 import { BigNumberJs, BN_ZERO, normalizeBn } from 'src/utils/number'
 import { addressOr, bigNumberOr } from 'src/utils/optional'
 import { ValueOf } from 'type-fest'
@@ -33,6 +34,7 @@ export type IPoolInfoService = {
   getPool: (address: string) => Promise<{ blockNumber: string; pool?: Pool }>
   getPoolMarketData: (
     address: string,
+    basePoolAddress?: string,
   ) => Promise<{ blockNumber: string; pool?: PoolMarketData }>
   getTVL: () => Promise<{ blockNumber: string; tvl: string }>
 }
@@ -155,11 +157,14 @@ export class PoolInfoService implements IPoolInfoService {
 
   getPoolMarketData: IPoolInfoService['getPoolMarketData'] = async (
     address,
+    basePoolAddress,
   ) => {
     const {
       blockNumber,
-      pools: [pool],
-    } = await this.poolMultiCall(address)
+      pools: [pool, basePool],
+    } = await this.poolMultiCall(
+      ...[address, basePoolAddress].filter(filterFalsy),
+    )
     if (!pool) return { blockNumber }
     const apyStats = await this.stats.getAPY()
     return {
@@ -170,6 +175,11 @@ export class PoolInfoService implements IPoolInfoService {
           address: pool.lpToken.address,
           totalSupply: pool.lpToken.totalSupply,
           virtualPrice: pool.lpToken.virtualPrice,
+        },
+        basePoolLPToken: basePool && {
+          address: basePool.lpToken.address,
+          totalSupply: basePool.lpToken.totalSupply,
+          virtualPrice: basePool.lpToken.virtualPrice,
         },
         balances: pool.coins.reduce(
           (res, coin) => ({ ...res, [coin.address]: coin.balance }),
