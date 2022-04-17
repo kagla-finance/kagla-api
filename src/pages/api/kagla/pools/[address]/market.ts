@@ -1,5 +1,6 @@
+import { SelfAPICallService } from 'src/api/self'
 import { poolInfoService } from 'src/factory'
-import { isAddress } from 'src/utils/address'
+import { equals, isAddress } from 'src/utils/address'
 import { asHandler, RequestValidator } from 'src/utils/api'
 
 /**
@@ -49,7 +50,11 @@ const validator: RequestValidator<Parameters> = (request) => {
   return { address }
 }
 const handler = asHandler(
-  ({ parameters: { address } }) => poolInfoService().getPoolMarketData(address),
+  async ({ parameters: { address } }) => {
+    const { pools } = await SelfAPICallService.new().listPools()
+    const pool = pools.find((pool) => equals(address, pool.address))
+    return poolInfoService().getPoolMarketData(address, pool?.basePool)
+  },
   {
     validator,
     headers: {
