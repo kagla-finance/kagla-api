@@ -72,6 +72,8 @@ export type Pool = {
  *          type: string
  *        lpToken:
  *          $ref: '#/components/schemas/LPTokenMarketData'
+ *        basePoolLPToken:
+ *          $ref: '#/components/schemas/LPTokenMarketData'
  *        balances:
  *          $ref: '#/components/schemas/Balance'
  *        underlyingBalances:
@@ -94,6 +96,7 @@ export type Pool = {
 export type PoolMarketData = {
   address: string
   lpToken: LPTokenMarketData
+  basePoolLPToken?: LPTokenMarketData
   balances: Balance
   underlyingBalances: Balance
   parameters: PoolParameters
