@@ -10,7 +10,11 @@ describe('kagla-api-deploy', () => {
   test('Api', () => {
     const app = new cdk.App()
     // WHEN
-    const stack = new KaglaApiDeployStack(app, 'TestStack', { nw, ...env })
+    const stack = new KaglaApiDeployStack(app, 'TestStack', {
+      nw,
+      alias: env.alias!,
+      chainId: env.chainId,
+    })
     expect(SynthUtils.toCloudFormation(stack)).toMatchSnapshot()
   })
   test('Certificate', () => {
