@@ -1,5 +1,5 @@
 import { poolInfoService } from 'src/factory'
-import { asHandler } from 'src/utils/api'
+import { asHandler, cacheControl } from 'src/utils/api'
 
 /**
  * @swagger
@@ -32,7 +32,7 @@ import { asHandler } from 'src/utils/api'
  */
 const handler = asHandler(poolInfoService().getTVL, {
   headers: {
-    'Cache-Control': 's-maxage=5, stale-while-revalidate=45',
+    'Cache-Control': cacheControl(5, 45),
   },
 })
 
