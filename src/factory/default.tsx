@@ -5,12 +5,12 @@ import { ERC20MultiCallService } from 'src/contracts/erc20'
 import { GaugeService } from 'src/contracts/gauge'
 import { MinterService } from 'src/contracts/minter'
 import { MultiCallService } from 'src/contracts/multiCall'
-import { PoolInfoService } from 'src/contracts/poolInfo'
+import { IPoolInfoService, PoolInfoService } from 'src/contracts/poolInfo'
 import { PriceServiceStaticImpl } from 'src/contracts/price/static'
 import { RegistryService } from 'src/contracts/registry'
 import { StatsService } from 'src/storage/Stats'
 
-export const poolInfoService = (chainId?: ChainId) => {
+export const poolInfoService = (chainId?: ChainId): IPoolInfoService => {
   const params = defaultParameters(chainId)
 
   const addressProvider = AddressProviderService.new(params)

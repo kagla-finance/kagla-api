@@ -1,6 +1,7 @@
 import { ethers, providers, Signer } from 'ethers'
 import { KGL_PRICE_IN_USD } from 'src/constants'
 import { LiquidityGauge } from 'src/models/gauge'
+import { MarketOverview } from 'src/models/market'
 import {
   AssetType,
   Pool,
@@ -37,6 +38,10 @@ export type IPoolInfoService = {
     basePoolAddress?: string,
   ) => Promise<{ blockNumber: string; pool?: PoolMarketData }>
   getTVL: () => Promise<{ blockNumber: string; tvl: string }>
+  getMarketOverView: () => Promise<{
+    blockNumber: string
+    market: MarketOverview
+  }>
 }
 
 export class PoolInfoService implements IPoolInfoService {
@@ -210,6 +215,25 @@ export class PoolInfoService implements IPoolInfoService {
     }
   }
 
+  getMarketOverView: IPoolInfoService['getMarketOverView'] = async () => {
+    const { blockNumber, pools } = await this.listPools()
+    return {
+      blockNumber,
+      market: {
+        pools: pools.map((p) => ({
+          address: p.address,
+          apy: p.apy,
+          gauges: p.gauges.map((g) => ({
+            address: g.address,
+            type: g.type,
+            minAPR: g.minAPR,
+            maxAPR: g.maxAPR,
+          })),
+        })),
+      },
+    }
+  }
+
   private poolMultiCall = async (...addresses: string[]) => {
     const { poolInfo, multiCall, price } = this
     const multicallData = await Promise.all(
@@ -265,6 +289,7 @@ export class PoolInfoService implements IPoolInfoService {
       pools,
     }
   }
+
   private createPoolMultiCallData = async (poolAddress: string) => {
     const { poolInfo, multiCall } = this
     const gauges = await this.registry.getGauges(poolAddress)
