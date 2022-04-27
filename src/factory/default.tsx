@@ -2,7 +2,7 @@ import { FallbackProvider, JsonRpcProvider } from '@ethersproject/providers'
 import { ChainId, getProtocolConfig } from 'src/config'
 import { AddressProviderService } from 'src/contracts/addressProvider'
 import { ERC20MultiCallService } from 'src/contracts/erc20'
-import { GaugeService } from 'src/contracts/gauge'
+import { GaugeService, IGaugeService } from 'src/contracts/gauge'
 import { MinterService } from 'src/contracts/minter'
 import { MultiCallService } from 'src/contracts/multiCall'
 import { IPoolInfoService, PoolInfoService } from 'src/contracts/poolInfo'
@@ -32,7 +32,7 @@ export const poolInfoService = (chainId?: ChainId): IPoolInfoService => {
   return service
 }
 
-export const gaugeService = (chainId?: ChainId) => {
+export const gaugeService = (chainId?: ChainId): IGaugeService => {
   const params = defaultParameters(chainId)
   return GaugeService.new(params)
 }
