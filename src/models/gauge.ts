@@ -60,3 +60,38 @@ export type StakingData = {
   stakedBalance: Balance
   claimableAmount: string
 }
+
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    GaugeInfo:
+ *      type: object
+ *      properties:
+ *        address:
+ *          type: string
+ *        poolName:
+ *          type: string
+ *        lpToken:
+ *          type: object
+ *          properties:
+ *            address:
+ *              type: string
+ *            symbol:
+ *              type: string
+ *          required:
+ *            - address
+ *            - symbol
+ *      required:
+ *        - address
+ *        - poolName
+ *        - lpToken
+ */
+export type GaugeInfo = {
+  address: string
+  poolName: string
+  lpToken: {
+    address: string
+    symbol: string
+  }
+}
