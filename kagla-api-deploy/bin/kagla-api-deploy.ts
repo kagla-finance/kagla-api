@@ -17,8 +17,10 @@ if (rootDomainName) {
   })
 }
 
-new KaglaApiDeployStack(app, `KaglaApiDeployStack-${nw}`, {
-  nw,
-  chainId,
-  alias,
-})
+if (alias) {
+  new KaglaApiDeployStack(app, `KaglaApiDeployStack-${nw}`, {
+    nw,
+    chainId,
+    alias,
+  })
+}

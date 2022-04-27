@@ -3,14 +3,14 @@ import { asHandler } from 'src/utils/api'
 
 /**
  * @swagger
- * /api/kagla/pools:
+ * /api/kagla/gauges:
  *   get:
  *     tags:
  *       - Kagla
- *     description: Returns list of Pool Outline
+ *     description: Returns list of Liquidity Gauges
  *     responses:
  *       200:
- *         description: Pools
+ *         description: Gauges
  *         content:
  *           application/json:
  *             schema:
@@ -18,13 +18,13 @@ import { asHandler } from 'src/utils/api'
  *               properties:
  *                 blockNumber:
  *                   type: string
- *                 pools:
+ *                 gauges:
  *                  type: array
  *                  items:
- *                    $ref: '#/components/schemas/PoolOutline'
+ *                    $ref: '#/components/schemas/GaugeInfo'
  *               required:
  *                 - blockNumber
- *                 - pools
+ *                 - gauges
  *       500:
  *         description: Unexpected error
  *         content:
@@ -32,6 +32,21 @@ import { asHandler } from 'src/utils/api'
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-const handler = asHandler(() => poolInfoService().listPools())
+const handler = asHandler(async () => {
+  const { blockNumber, pools } = await poolInfoService().listPools(true)
+  return {
+    blockNumber,
+    gauges: pools.flatMap((p) =>
+      p.gauges.map((g) => ({
+        address: g.address,
+        poolName: p.name,
+        lpToken: {
+          address: p.lpToken.address,
+          symbol: p.lpToken.symbol,
+        },
+      })),
+    ),
+  }
+})
 
 export default handler

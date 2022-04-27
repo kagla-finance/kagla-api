@@ -1,16 +1,16 @@
-import { poolInfoService } from 'src/factory'
-import { asHandler, cacheControl } from 'src/utils/api'
+import { gaugeService } from 'src/factory'
+import { asHandler } from 'src/utils/api'
 
 /**
  * @swagger
- * /api/kagla/tvl:
+ * /api/kagla/gauges/allocations/next:
  *   get:
  *     tags:
  *       - Kagla
- *     description: Returns normalized TVL
+ *     description: Returns next gauge allocation
  *     responses:
  *       200:
- *         description: normalized TVL
+ *         description: gauge allocation
  *         content:
  *           application/json:
  *             schema:
@@ -18,11 +18,11 @@ import { asHandler, cacheControl } from 'src/utils/api'
  *               properties:
  *                 blockNumber:
  *                   type: string
- *                 tvl:
- *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/GaugeAllocation'
  *               required:
  *                 - blockNumber
- *                 - tvl
+ *                 - data
  *       500:
  *         description: Unexpected error
  *         content:
@@ -30,9 +30,9 @@ import { asHandler, cacheControl } from 'src/utils/api'
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-const handler = asHandler(poolInfoService().getTVL, {
+const handler = asHandler(gaugeService().getNextAllocation, {
   headers: {
-    'Cache-Control': cacheControl(5, 45),
+    'Cache-Control': 's-maxage=5, stale-while-revalidate=45',
   },
 })
 

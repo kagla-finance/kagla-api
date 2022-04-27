@@ -124,6 +124,7 @@ export type PoolMarketData = {
  */
 export type LPTokenMarketData = {
   address: string
+  symbol: string
   totalSupply: string
   virtualPrice: string
 }

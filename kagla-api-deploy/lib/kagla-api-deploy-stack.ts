@@ -13,7 +13,7 @@ import { appName, Network } from './config'
 type KaglaApiDeployStackProps = {
   nw: Network
   chainId: number
-  alias?: {
+  alias: {
     domainName: string
     certificateArnParameterName: string
   }
@@ -35,7 +35,10 @@ export class KaglaApiDeployStack extends Stack {
         taskImageOptions: {
           image: ContainerImage.fromAsset('../'),
           containerPort: 3000,
-          environment: { CHAIN_ID: `${chainId}` },
+          environment: {
+            CHAIN_ID: `${chainId}`,
+            VERCEL_URL: alias.domainName,
+          },
         },
       },
     )

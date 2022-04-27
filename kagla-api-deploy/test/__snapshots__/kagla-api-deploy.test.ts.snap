@@ -688,6 +688,10 @@ Object {
                 "Name": "CHAIN_ID",
                 "Value": "592",
               },
+              Object {
+                "Name": "VERCEL_URL",
+                "Value": "api.kagla.finance",
+              },
             ],
             "Essential": true,
             "Image": Object {
@@ -705,7 +709,7 @@ Object {
                   Object {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/aws-cdk/assets:14d22e090f1de2068a13b75a7c36455ee795de1675ad7ba34e87d49d8b957f9f",
+                  "/aws-cdk/assets:5e153d59a9f6e1527ee15357fd75fc153fb38c9e39f15c79944068157b2d349a",
                 ],
               ],
             },

@@ -47,8 +47,11 @@ export const asHandler =
     }
   }
 
+export const cacheControl = (sMaxAge: number, staleWhileRevalidate: number) =>
+  `s-maxage=${sMaxAge}, stale-while-revalidate=${staleWhileRevalidate}`
+
 const DEFUALT_HEADERS = [
-  { name: 'Cache-Control', value: 's-maxage=300, stale-while-revalidate=600' },
+  { name: 'Cache-Control', value: cacheControl(300, 600) },
   { name: 'Access-Control-Allow-Origin', value: '*' },
   { name: 'Access-Control-Allow-Headers', value: '*' },
   { name: 'Access-Control-Allow-Methods', value: 'GET, OPTIONS' },

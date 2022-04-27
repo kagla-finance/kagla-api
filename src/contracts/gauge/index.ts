@@ -1,11 +1,12 @@
-import { BigNumber, BytesLike, providers, Signer } from 'ethers'
+import { BigNumber, BigNumberish, BytesLike, providers, Signer } from 'ethers'
 import { WORST_APR_RATIO } from 'src/constants'
-import { LiquidityGauge, StakingData } from 'src/models/gauge'
+import { GaugeAllocation, LiquidityGauge, StakingData } from 'src/models/gauge'
 import {
   BigNumberJs,
   BN_ZERO,
   normalizeBn,
   product,
+  SECONDS_PER_WEEK,
   SECONDS_PER_YEAR,
 } from 'src/utils/number'
 import {
@@ -29,7 +30,14 @@ type StakingDataResponse = {
   data: StakingData
 }
 
+type GaugeAllocationResponse = {
+  blockNumber: string
+  data: GaugeAllocation
+}
+
 export type IGaugeService = {
+  getCurrentAllocation: () => Promise<GaugeAllocationResponse>
+  getNextAllocation: () => Promise<GaugeAllocationResponse>
   getStakingData: (owner: string) => Promise<StakingDataResponse>
   createGaugeMutilCallData: (address: string) => MultiCallData[]
   mapGaugeMutilCallResults: (
@@ -65,20 +73,72 @@ export class GaugeService implements IGaugeService {
       MultiCallService.new(params),
     )
 
-  listGaugeData = async () => {
-    const gaugeAddresses: string[] = []
-    this.multiCall.callViewFunctionsByAddresses<LiquidityGaugeV3, any>({
-      iContract: LiquidityGaugeV3__factory.createInterface(),
-      targetAddresses: gaugeAddresses,
-      viewFuntions: ['inflation_rate', 'working_supply'],
+  listGaugeAdresses = async () => {
+    const { gaugeController, multiCall } = this
+    const numOfGauges = await gaugeController.n_gauges()
+    const { data } = await multiCall.callByIndex({
+      contract: gaugeController,
+      count: numOfGauges.toNumber(),
+      functionName: 'gauges',
     })
-    this.multiCall.callViewFunctionsByArgs({
-      contract: this.gaugeController,
+    return data.flat()
+  }
+
+  getCurrentAllocation: IGaugeService['getCurrentAllocation'] = async () => {
+    const { gaugeController, multiCall } = this
+    const addresses = await this.listGaugeAdresses()
+    const total = await gaugeController.get_total_weight()
+    const { blockNumber, data } = await multiCall.callViewFunctionsByArgs({
+      contract: gaugeController,
       viewFuntions: ['gauge_relative_weight(address)'],
-      argsMaps: gaugeAddresses.map((address) => ({
+      argsMaps: addresses.map((address) => ({
         'gauge_relative_weight(address)': [address] as [string],
       })),
     })
+    return {
+      blockNumber: blockNumber.toString(),
+      data: {
+        total: total.toString(),
+        allocation: Object.values(data).map((res, idx) => ({
+          gauge: addresses[idx],
+          ratio: normalizeBn(
+            res['gauge_relative_weight(address)'][0].toString(),
+          ).toNumber(),
+        })),
+      },
+    }
+  }
+
+  getNextAllocation: IGaugeService['getNextAllocation'] = async () => {
+    const { gaugeController, multiCall } = this
+    const addresses = await this.listGaugeAdresses()
+    const startOfNextWeek =
+      Math.ceil(Math.floor(Date.now() / 1000) / SECONDS_PER_WEEK) *
+      SECONDS_PER_WEEK
+
+    const total = await gaugeController.points_total(startOfNextWeek)
+    const { blockNumber, data } = await multiCall.callViewFunctionsByArgs({
+      contract: gaugeController,
+      viewFuntions: ['gauge_relative_weight(address,uint256)'],
+      argsMaps: addresses.map((address) => ({
+        'gauge_relative_weight(address,uint256)': [
+          address,
+          startOfNextWeek,
+        ] as [string, BigNumberish],
+      })),
+    })
+    return {
+      blockNumber: blockNumber.toString(),
+      data: {
+        total: total.toString(),
+        allocation: Object.values(data).map((res, idx) => ({
+          gauge: addresses[idx],
+          ratio: normalizeBn(
+            res['gauge_relative_weight(address,uint256)'][0].toString(),
+          ).toNumber(),
+        })),
+      },
+    }
   }
 
   createGaugeMutilCallData: IGaugeService['createGaugeMutilCallData'] = (
@@ -153,6 +213,7 @@ export class GaugeService implements IGaugeService {
       targetAddresses: gaugeAddresses,
       viewFuntions: ['lp_token', 'balanceOf', 'claimable_tokens'],
       argMap: { balanceOf: [owner], claimable_tokens: [owner] },
+      resultsMapper: (res, fn) => ({ [fn]: res[0] }),
     })
     const result = gaugeAddresses.reduce(
       (res, address) => {
@@ -166,15 +227,24 @@ export class GaugeService implements IGaugeService {
             ...res.stakedBalance,
             [response.lp_token]: response.balanceOf.toString(),
           },
+          claimableAmounts: {
+            ...res.claimableAmounts,
+            [address]: response.claimable_tokens.toString(),
+          },
           claimableAmount: response.claimable_tokens.add(res.claimableAmount),
         }
       },
-      { stakedBalance: {}, claimableAmount: BigNumber.from('0') },
+      {
+        stakedBalance: {},
+        claimableAmounts: {},
+        claimableAmount: BigNumber.from('0'),
+      },
     )
     return {
       blockNumber: gaugeRes.blockNumber.toString(),
       data: {
         stakedBalance: result.stakedBalance,
+        claimableAmounts: result.claimableAmounts,
         claimableAmount: result.claimableAmount.toString(),
       },
     }

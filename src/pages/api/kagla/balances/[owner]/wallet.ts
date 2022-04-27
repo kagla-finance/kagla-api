@@ -4,7 +4,7 @@ import { SelfAPICallService } from 'src/api/self'
 import { getProtocolConfig } from 'src/config'
 import { ERC20MultiCallService } from 'src/contracts/erc20'
 import { isAddress } from 'src/utils/address'
-import { asHandler, RequestValidator } from 'src/utils/api'
+import { asHandler, cacheControl, RequestValidator } from 'src/utils/api'
 /**
  * @swagger
  * /api/kagla/balances/{owner}/wallet:
@@ -93,7 +93,7 @@ const handler = asHandler(
   {
     validator,
     headers: {
-      'Cache-Control': 's-maxage=5, stale-while-revalidate=45',
+      'Cache-Control': cacheControl(5, 45),
     },
   },
 )

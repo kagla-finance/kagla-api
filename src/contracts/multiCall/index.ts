@@ -257,5 +257,5 @@ export const mapMultiCallResult = <T extends BytesLike>(
 
 const defaultKeyGenerator = (index: number) => `${index}`
 export const defaultResultsMapper = (fnRes: Result, fn: string) => ({
-  [fn]: fnRes[0],
+  [fn]: fnRes,
 })
