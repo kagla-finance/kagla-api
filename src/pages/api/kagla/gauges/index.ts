@@ -42,7 +42,7 @@ const handler = asHandler(async () => {
         poolName: p.name,
         lpToken: {
           address: p.lpToken.address,
-          symnbol: p.lpToken.symbol,
+          symbol: p.lpToken.symbol,
         },
       })),
     ),
