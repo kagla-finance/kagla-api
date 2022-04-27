@@ -7,6 +7,7 @@ BigNumberJs.config({ EXPONENTIAL_AT: 1e9 })
 export const BN_ZERO = new BigNumberJs('0')
 export const BN_ONE = new BigNumberJs('1')
 
+export const SECONDS_PER_WEEK = 60 * 60 * 24 * 7
 export const SECONDS_PER_YEAR = 60 * 60 * 24 * 365
 
 export const bigNumberJsOrZero = (value: any) => {

@@ -50,15 +50,54 @@ export type LiquidityGauge = {
  *        stakedBalance:
  *          description: map of lp token address and staked balance
  *          $ref: '#/components/schemas/Balance'
+ *        claimableAmounts:
+ *          description: map of gauge address and claimable amount
+ *          $ref: '#/components/schemas/Balance'
  *        claimableAmount:
+ *          description: sum of claimable amounts
  *          type: string
  *      required:
  *        - stakedBalance
+ *        - claimableAmounts
  *        - claimableAmount
  */
 export type StakingData = {
   stakedBalance: Balance
+  claimableAmounts: Balance
   claimableAmount: string
+}
+
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    GaugeAllocation:
+ *      type: object
+ *      properties:
+ *        total:
+ *          type: string
+ *        allocation:
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              gauge:
+ *                type: string
+ *              ratio:
+ *                type: number
+ *            required:
+ *              - gauge
+ *              - weight
+ *      required:
+ *        - total
+ *        - allocation
+ */
+export type GaugeAllocation = {
+  total: string
+  allocation: {
+    gauge: string
+    ratio: number
+  }[]
 }
 
 /**
