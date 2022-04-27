@@ -195,6 +195,7 @@ export class PoolInfoService implements IPoolInfoService {
         },
         basePoolLPToken: basePool && {
           address: basePool.lpToken.address,
+          symbol: basePool.lpToken.symbol,
           totalSupply: basePool.lpToken.totalSupply,
           virtualPrice: basePool.lpToken.virtualPrice,
         },
