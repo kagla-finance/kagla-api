@@ -1,8 +1,18 @@
-import { ChainId, CHAIN_ID, DEFAULT_CHAIN_ID } from './chain'
+import { ChainId, CHAIN_ID, DEFAULT_CHAIN_ID, isSupportedChain } from './chain'
+import { getEolGauges } from './eolGauges'
 
-export const getProtocolConfig = (chainId: number = DEFAULT_CHAIN_ID) =>
-  PROTOCOL_CONFIG[chainId as ChainId] || PROTOCOL_CONFIG[DEFAULT_CHAIN_ID]
-
+export const getProtocolConfig = (
+  chainId: number = DEFAULT_CHAIN_ID,
+): ProtocolConfig => {
+  const supportedChainId = isSupportedChain(chainId)
+    ? chainId
+    : DEFAULT_CHAIN_ID
+  const config = PROTOCOL_CONFIG[supportedChainId]
+  return {
+    ...config,
+    eolGauges: getEolGauges(supportedChainId).concat(config.eolGauges || []),
+  }
+}
 type ProtocolConfig = {
   rpcUrls: string[]
   storageEndpoint: string
@@ -28,11 +38,6 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
     },
     rpcUrls: ['https://evm.astar.network'],
     storageEndpoint: 'https://kagla-stats-astar.s3.amazonaws.com',
-    eolGauges: [
-      '0xa480B71b5aFBe28df9658C253e1E18A5EeDA131E',
-      '0x13EE6d778B41229a8dF6a2c6EB2dcf595faFc2f4',
-      '0x940f388bb2f33C81840b70cDd72b3bC73d76232E',
-    ],
   },
   [CHAIN_ID.shiden]: {
     addresses: {
@@ -45,10 +50,5 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
     },
     rpcUrls: ['https://shiden.api.onfinality.io/public'],
     storageEndpoint: 'https://kagla-stats-shiden.s3.amazonaws.com',
-    eolGauges: [
-      '0xc020e5d53af59b0fd22970f9851acb1a12a317c6',
-      '0xdf180f31739284a1a8ba3a110cddad58642f3daf',
-      '0xe806e841ca26ff5a82e58a7a9144b7032623e4fb',
-    ],
   },
 }

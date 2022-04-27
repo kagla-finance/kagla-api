@@ -17,3 +17,6 @@ const chainIdOr = <T>(chainId: any, defaultValue: T): ChainId | T =>
 const FALLBACK_CHAIN_ID: ChainId = CHAIN_ID.astar
 
 export const DEFAULT_CHAIN_ID = chainIdOr(ENV_CHAIN_ID, FALLBACK_CHAIN_ID)
+
+export const isSupportedChain = (arg: any): arg is ChainId =>
+  arg === DEFAULT_CHAIN_ID
