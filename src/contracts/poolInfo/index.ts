@@ -1,4 +1,5 @@
 import { ethers, providers, Signer } from 'ethers'
+import { getProtocolConfig } from 'src/config'
 import { KGL_PRICE_IN_USD } from 'src/constants'
 import { LiquidityGauge } from 'src/models/gauge'
 import { MarketOverview } from 'src/models/market'
@@ -11,6 +12,7 @@ import {
   PoolUnderlyingCoin,
 } from 'src/models/pool'
 import { IStatsService } from 'src/storage/Stats'
+import { equals } from 'src/utils/address'
 import { filterFalsy } from 'src/utils/array'
 import { BigNumberJs, BN_ZERO, normalizeBn } from 'src/utils/number'
 import { addressOr, bigNumberOr } from 'src/utils/optional'
@@ -235,6 +237,8 @@ export class PoolInfoService implements IPoolInfoService {
   }
 
   private poolMultiCall = async (...addresses: string[]) => {
+    const { eolGauges } = getProtocolConfig()
+
     const { poolInfo, multiCall, price } = this
     const multicallData = await Promise.all(
       addresses.map(this.createPoolMultiCallData),
@@ -264,24 +268,29 @@ export class PoolInfoService implements IPoolInfoService {
 
       // gauge
       const assetPrice = assetPrices[pool.assetType]
-      const gauges: LiquidityGauge[] = multicallData[i].gauges.map((gauge) => {
-        const mapped = this.gauge.mapGaugeMutilCallResults(
-          gauge,
-          returnData,
-          nextIndex,
-          {
-            assetPrice: BigNumberJs.isBigNumber(assetPrice)
-              ? assetPrice
-              : // not supported yet
-                BN_ZERO,
-            // other rewards not supported yet
-            rewardPrice: KGL_PRICE_IN_USD,
-            lpTokenVirtualPrice: normalizeBn(pool.lpToken.virtualPrice),
-          },
+      const gauges: LiquidityGauge[] = multicallData[i].gauges
+        .map((gauge) => {
+          const mapped = this.gauge.mapGaugeMutilCallResults(
+            gauge,
+            returnData,
+            nextIndex,
+            {
+              assetPrice: BigNumberJs.isBigNumber(assetPrice)
+                ? assetPrice
+                : // not supported yet
+                  BN_ZERO,
+              // other rewards not supported yet
+              rewardPrice: KGL_PRICE_IN_USD,
+              lpTokenVirtualPrice: normalizeBn(pool.lpToken.virtualPrice),
+            },
+          )
+          nextIndex = mapped.nextIndex
+          return mapped.gauge
+        })
+        .filter(
+          ({ address }) =>
+            !eolGauges?.find((eolGauge) => equals(address, eolGauge)),
         )
-        nextIndex = mapped.nextIndex
-        return mapped.gauge
-      })
       pools.push({ ...pool, gauges })
     }
     return {
