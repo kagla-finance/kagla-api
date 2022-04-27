@@ -1,7 +1,7 @@
 import { SelfAPICallService } from 'src/api/self'
 import { poolInfoService } from 'src/factory'
 import { equals, isAddress } from 'src/utils/address'
-import { asHandler, RequestValidator } from 'src/utils/api'
+import { asHandler, cacheControl, RequestValidator } from 'src/utils/api'
 
 /**
  * @swagger
@@ -58,7 +58,7 @@ const handler = asHandler(
   {
     validator,
     headers: {
-      'Cache-Control': 's-maxage=5, stale-while-revalidate=45',
+      'Cache-Control': cacheControl(5, 45),
     },
   },
 )

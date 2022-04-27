@@ -1,8 +1,18 @@
-import { ChainId, CHAIN_ID, DEFAULT_CHAIN_ID } from './chain'
+import { ChainId, CHAIN_ID, DEFAULT_CHAIN_ID, isSupportedChain } from './chain'
+import { getEolGauges } from './eolGauges'
 
-export const getProtocolConfig = (chainId: number = DEFAULT_CHAIN_ID) =>
-  PROTOCOL_CONFIG[chainId as ChainId] || PROTOCOL_CONFIG[DEFAULT_CHAIN_ID]
-
+export const getProtocolConfig = (
+  chainId: number = DEFAULT_CHAIN_ID,
+): ProtocolConfig => {
+  const supportedChainId = isSupportedChain(chainId)
+    ? chainId
+    : DEFAULT_CHAIN_ID
+  const config = PROTOCOL_CONFIG[supportedChainId]
+  return {
+    ...config,
+    eolGauges: getEolGauges(supportedChainId).concat(config.eolGauges || []),
+  }
+}
 type ProtocolConfig = {
   rpcUrls: string[]
   storageEndpoint: string
@@ -14,6 +24,7 @@ type ProtocolConfig = {
     minter: string
     diaOracle?: string
   }
+  eolGauges?: string[]
 }
 
 export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
@@ -30,10 +41,10 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
   },
   [CHAIN_ID.shiden]: {
     addresses: {
-      addressProvider: '0x762b149eA23070d6F021F70CB8877d2248278855',
-      poolInfo: '0x64Aa34dec0eB81B21e4869Ac942A60bd21BebE87',
-      gaugeController: '0xBEDcfA1EB6cf39dd829207147692C0eaeCe32065',
-      minter: '0x5dE0CF708F7753F176F1d23229c0EE50a23872f7',
+      addressProvider: '0x1aceb2849e249C5403Fe1331d63587ed43C78425',
+      poolInfo: '0x8C288317cF2B79BB6d7c77fCd29d63167Bf1AcAA',
+      gaugeController: '0xfe372d95BDFE7313435D539c87E68029A792997e',
+      minter: '0xa6358181b2753DAC5d2Ade97519E7c1A766d9c87',
       multiCall: '0xB6E580BF400d8DEb17dacDD67734d399367e7f94',
       diaOracle: '0xCe784F99f87dBa11E0906e2fE954b08a8cc9815d',
     },

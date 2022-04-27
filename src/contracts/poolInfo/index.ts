@@ -1,6 +1,8 @@
 import { ethers, providers, Signer } from 'ethers'
+import { getProtocolConfig } from 'src/config'
 import { KGL_PRICE_IN_USD } from 'src/constants'
 import { LiquidityGauge } from 'src/models/gauge'
+import { MarketOverview } from 'src/models/market'
 import {
   AssetType,
   Pool,
@@ -10,6 +12,7 @@ import {
   PoolUnderlyingCoin,
 } from 'src/models/pool'
 import { IStatsService } from 'src/storage/Stats'
+import { equals } from 'src/utils/address'
 import { filterFalsy } from 'src/utils/array'
 import { BigNumberJs, BN_ZERO, normalizeBn } from 'src/utils/number'
 import { addressOr, bigNumberOr } from 'src/utils/optional'
@@ -30,13 +33,19 @@ import { PoolInfo, PoolInfo__factory } from '../__generated__'
 import { calculatePoolsTVL } from './calculator'
 
 export type IPoolInfoService = {
-  listPools: () => Promise<{ blockNumber: string; pools: PoolOutline[] }>
+  listPools: (
+    includeEolGauges?: boolean,
+  ) => Promise<{ blockNumber: string; pools: PoolOutline[] }>
   getPool: (address: string) => Promise<{ blockNumber: string; pool?: Pool }>
   getPoolMarketData: (
     address: string,
     basePoolAddress?: string,
   ) => Promise<{ blockNumber: string; pool?: PoolMarketData }>
   getTVL: () => Promise<{ blockNumber: string; tvl: string }>
+  getMarketOverView: () => Promise<{
+    blockNumber: string
+    market: MarketOverview
+  }>
 }
 
 export class PoolInfoService implements IPoolInfoService {
@@ -77,10 +86,15 @@ export class PoolInfoService implements IPoolInfoService {
       dependencies.price,
     )
 
-  listPools: IPoolInfoService['listPools'] = async () => {
+  listPools: IPoolInfoService['listPools'] = async (
+    includeEolGauges = false,
+  ) => {
     const poolAddresses = await this.registry.listPoolAddresses()
     const apyStats = await this.stats.getAPY()
-    const { blockNumber, pools } = await this.poolMultiCall(...poolAddresses)
+    const { blockNumber, pools } = await this.poolMultiCall(
+      includeEolGauges,
+      ...poolAddresses,
+    )
     return {
       blockNumber,
       pools: pools.map((poolInfo, idx) => ({
@@ -89,6 +103,7 @@ export class PoolInfoService implements IPoolInfoService {
         assetType: poolInfo.assetType,
         lpToken: {
           address: poolInfo.lpToken.address,
+          symbol: poolInfo.lpToken.symbol,
           totalSupply: poolInfo.lpToken.totalSupply,
           virtualPrice: poolInfo.lpToken.virtualPrice,
         },
@@ -127,7 +142,7 @@ export class PoolInfoService implements IPoolInfoService {
     const {
       blockNumber,
       pools: [pool],
-    } = await this.poolMultiCall(address)
+    } = await this.poolMultiCall(false, address)
     if (!pool) return { blockNumber }
     const coinAddresses = pool.coins
       .map(({ address }) => address)
@@ -163,6 +178,7 @@ export class PoolInfoService implements IPoolInfoService {
       blockNumber,
       pools: [pool, basePool],
     } = await this.poolMultiCall(
+      false,
       ...[address, basePoolAddress].filter(filterFalsy),
     )
     if (!pool) return { blockNumber }
@@ -173,11 +189,13 @@ export class PoolInfoService implements IPoolInfoService {
         address,
         lpToken: {
           address: pool.lpToken.address,
+          symbol: pool.lpToken.symbol,
           totalSupply: pool.lpToken.totalSupply,
           virtualPrice: pool.lpToken.virtualPrice,
         },
         basePoolLPToken: basePool && {
           address: basePool.lpToken.address,
+          symbol: basePool.lpToken.symbol,
           totalSupply: basePool.lpToken.totalSupply,
           virtualPrice: basePool.lpToken.virtualPrice,
         },
@@ -210,7 +228,31 @@ export class PoolInfoService implements IPoolInfoService {
     }
   }
 
-  private poolMultiCall = async (...addresses: string[]) => {
+  getMarketOverView: IPoolInfoService['getMarketOverView'] = async () => {
+    const { blockNumber, pools } = await this.listPools()
+    return {
+      blockNumber,
+      market: {
+        pools: pools.map((p) => ({
+          address: p.address,
+          apy: p.apy,
+          gauges: p.gauges.map((g) => ({
+            address: g.address,
+            type: g.type,
+            minAPR: g.minAPR,
+            maxAPR: g.maxAPR,
+          })),
+        })),
+      },
+    }
+  }
+
+  private poolMultiCall = async (
+    includeEolGauges: boolean,
+    ...addresses: string[]
+  ) => {
+    const { eolGauges } = getProtocolConfig()
+
     const { poolInfo, multiCall, price } = this
     const multicallData = await Promise.all(
       addresses.map(this.createPoolMultiCallData),
@@ -240,24 +282,30 @@ export class PoolInfoService implements IPoolInfoService {
 
       // gauge
       const assetPrice = assetPrices[pool.assetType]
-      const gauges: LiquidityGauge[] = multicallData[i].gauges.map((gauge) => {
-        const mapped = this.gauge.mapGaugeMutilCallResults(
-          gauge,
-          returnData,
-          nextIndex,
-          {
-            assetPrice: BigNumberJs.isBigNumber(assetPrice)
-              ? assetPrice
-              : // not supported yet
-                BN_ZERO,
-            // other rewards not supported yet
-            rewardPrice: KGL_PRICE_IN_USD,
-            lpTokenVirtualPrice: normalizeBn(pool.lpToken.virtualPrice),
-          },
+      const gauges: LiquidityGauge[] = multicallData[i].gauges
+        .map((gauge) => {
+          const mapped = this.gauge.mapGaugeMutilCallResults(
+            gauge,
+            returnData,
+            nextIndex,
+            {
+              assetPrice: BigNumberJs.isBigNumber(assetPrice)
+                ? assetPrice
+                : // not supported yet
+                  BN_ZERO,
+              // other rewards not supported yet
+              rewardPrice: KGL_PRICE_IN_USD,
+              lpTokenVirtualPrice: normalizeBn(pool.lpToken.virtualPrice),
+            },
+          )
+          nextIndex = mapped.nextIndex
+          return mapped.gauge
+        })
+        .filter(
+          ({ address }) =>
+            includeEolGauges ||
+            !eolGauges?.find((eolGauge) => equals(address, eolGauge)),
         )
-        nextIndex = mapped.nextIndex
-        return mapped.gauge
-      })
       pools.push({ ...pool, gauges })
     }
     return {
@@ -265,6 +313,7 @@ export class PoolInfoService implements IPoolInfoService {
       pools,
     }
   }
+
   private createPoolMultiCallData = async (poolAddress: string) => {
     const { poolInfo, multiCall } = this
     const gauges = await this.registry.getGauges(poolAddress)

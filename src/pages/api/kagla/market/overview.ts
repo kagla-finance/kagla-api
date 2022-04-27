@@ -3,14 +3,14 @@ import { asHandler, cacheControl } from 'src/utils/api'
 
 /**
  * @swagger
- * /api/kagla/tvl:
+ * /api/kagla/market/overview:
  *   get:
  *     tags:
  *       - Kagla
- *     description: Returns normalized TVL
+ *     description: Returns Market Overview
  *     responses:
  *       200:
- *         description: normalized TVL
+ *         description: MarketOverview
  *         content:
  *           application/json:
  *             schema:
@@ -18,11 +18,11 @@ import { asHandler, cacheControl } from 'src/utils/api'
  *               properties:
  *                 blockNumber:
  *                   type: string
- *                 tvl:
- *                   type: string
+ *                 market:
+ *                   $ref: '#/components/schemas/MarketOverview'
  *               required:
  *                 - blockNumber
- *                 - tvl
+ *                 - market
  *       500:
  *         description: Unexpected error
  *         content:
@@ -30,9 +30,9 @@ import { asHandler, cacheControl } from 'src/utils/api'
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-const handler = asHandler(poolInfoService().getTVL, {
+const handler = asHandler(poolInfoService().getMarketOverView, {
   headers: {
-    'Cache-Control': cacheControl(5, 45),
+    'Cache-Control': cacheControl(3600, 7200),
   },
 })
 
