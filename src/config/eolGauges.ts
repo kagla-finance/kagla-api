@@ -28,9 +28,9 @@ const EOL_GAUGES: Record<ChainId, EolGauges[]> = {
     {
       eolAt: dayjs('2022-04-27T17:01:00Z'),
       gauges: [
-        '0xc020e5D53Af59b0Fd22970f9851AcB1a12A317c6',
-        '0xdF180f31739284a1A8Ba3a110cDdaD58642F3DAF',
         '0xe806e841ca26fF5A82E58A7A9144B7032623E4FB',
+        '0xc020e5D53Af59b0Fd22970f9851AcB1a12A317c6',
+        '0xEA3f71E306D44B864FBEd2d9ee4E0303FA9049D8 ',
       ],
     },
   ],
