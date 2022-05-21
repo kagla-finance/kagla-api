@@ -78,7 +78,7 @@ export type Pool = {
  *          $ref: '#/components/schemas/Balance'
  *        underlyingBalances:
  *          $ref: '#/components/schemas/Balance'
- *        basePoolBalances:
+ *        basePoolUnderlyingBalances:
  *          $ref: '#/components/schemas/Balance'
  *        apy:
  *          type: string
