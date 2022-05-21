@@ -32,7 +32,7 @@ import { asHandler, cacheControl } from 'src/utils/api'
  */
 const handler = asHandler(poolInfoService().getMarketOverView, {
   headers: {
-    'Cache-Control': cacheControl(3600, 7200),
+    'Cache-Control': cacheControl(300, 600),
   },
 })
 
