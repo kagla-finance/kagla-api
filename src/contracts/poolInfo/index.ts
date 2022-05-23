@@ -207,6 +207,10 @@ export class PoolInfoService implements IPoolInfoService {
           (res, coin) => ({ ...res, [coin.address]: coin.balance }),
           {},
         ),
+        basePoolUnderlyingBalances: basePool?.underlyingCoins.reduce(
+          (res, coin) => ({ ...res, [coin.address]: coin.balance }),
+          {},
+        ),
         apy: apyStats?.apy.day[pool.name]?.toString(),
         parameters: pool.parameters,
         gauges: pool.gauges,

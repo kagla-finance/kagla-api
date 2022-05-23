@@ -78,6 +78,8 @@ export type Pool = {
  *          $ref: '#/components/schemas/Balance'
  *        underlyingBalances:
  *          $ref: '#/components/schemas/Balance'
+ *        basePoolUnderlyingBalances:
+ *          $ref: '#/components/schemas/Balance'
  *        apy:
  *          type: string
  *        parameters:
@@ -99,6 +101,7 @@ export type PoolMarketData = {
   basePoolLPToken?: LPTokenMarketData
   balances: Balance
   underlyingBalances: Balance
+  basePoolUnderlyingBalances?: Balance
   parameters: PoolParameters
   gauges: LiquidityGauge[]
   apy?: string
