@@ -9,6 +9,7 @@ export type { LiquidityGaugeV3 } from "./LiquidityGaugeV3";
 export type { Minter } from "./Minter";
 export type { Multicall } from "./Multicall";
 export type { PoolInfo } from "./PoolInfo";
+export type { PoolInfoV2 } from "./PoolInfoV2";
 export type { Registry } from "./Registry";
 export type { StableSwap } from "./StableSwap";
 
@@ -20,5 +21,6 @@ export { LiquidityGaugeV3__factory } from "./factories/LiquidityGaugeV3__factory
 export { Minter__factory } from "./factories/Minter__factory";
 export { Multicall__factory } from "./factories/Multicall__factory";
 export { PoolInfo__factory } from "./factories/PoolInfo__factory";
+export { PoolInfoV2__factory } from "./factories/PoolInfoV2__factory";
 export { Registry__factory } from "./factories/Registry__factory";
 export { StableSwap__factory } from "./factories/StableSwap__factory";
