@@ -29,7 +29,7 @@ import {
 } from '../multiCall'
 import { IPriceService } from '../price'
 import { IRegistryService } from '../registry'
-import { PoolInfo, PoolInfo__factory } from '../__generated__'
+import { PoolInfoV2, PoolInfoV2__factory } from '../__generated__'
 import { calculatePoolsTVL } from './calculator'
 
 export type IPoolInfoService = {
@@ -50,7 +50,7 @@ export type IPoolInfoService = {
 
 export class PoolInfoService implements IPoolInfoService {
   private constructor(
-    readonly poolInfo: PoolInfo,
+    readonly poolInfo: PoolInfoV2,
     readonly registry: IRegistryService,
     readonly gauge: IGaugeService,
     readonly multiCall: IMultiCallService,
@@ -74,7 +74,7 @@ export class PoolInfoService implements IPoolInfoService {
     },
   ) =>
     new PoolInfoService(
-      PoolInfo__factory.connect(
+      PoolInfoV2__factory.connect(
         params.poolInfoAddress,
         params.signerOrProvider,
       ),
@@ -204,6 +204,10 @@ export class PoolInfoService implements IPoolInfoService {
           {},
         ),
         underlyingBalances: pool.underlyingCoins.reduce(
+          (res, coin) => ({ ...res, [coin.address]: coin.balance }),
+          {},
+        ),
+        basePoolUnderlyingBalances: basePool?.underlyingCoins.reduce(
           (res, coin) => ({ ...res, [coin.address]: coin.balance }),
           {},
         ),
@@ -347,15 +351,17 @@ type MappedPoolInfo = Omit<Pool, 'coins' | 'underlyingCoins'> & {
 }
 
 const resultsMapper: FunctionResultsMapper<
-  PoolInfo,
-  FunctionName<PoolInfo>,
+  PoolInfoV2,
+  FunctionName<PoolInfoV2>,
   Omit<MappedPoolInfo, 'address'>
 > = (res, functionName, current) => {
   if (functionName === 'get_pool_coins')
-    return getPoolCoinsMapper(res as FunctionResult<PoolInfo, 'get_pool_coins'>)
+    return getPoolCoinsMapper(
+      res as FunctionResult<PoolInfoV2, 'get_pool_coins'>,
+    )
   if (functionName === 'get_pool_info')
     return getPoolInfoMapper(
-      res as FunctionResult<PoolInfo, 'get_pool_info'>,
+      res as FunctionResult<PoolInfoV2, 'get_pool_info'>,
       current,
     )
   console.warn(`no mapper found: ${functionName}`)
@@ -363,7 +369,7 @@ const resultsMapper: FunctionResultsMapper<
 }
 
 const getPoolInfoMapper: FunctionResultMapper<
-  PoolInfo,
+  PoolInfoV2,
   'get_pool_info',
   MappedPoolInfo
 > = (res, current = {}) => ({
@@ -398,10 +404,11 @@ const getPoolInfoMapper: FunctionResultMapper<
     ...coin,
     balance: res.underlying_balances[idx].toString(),
   })),
+  zapper: addressOr(res.zap),
 })
 
 const getPoolCoinsMapper: FunctionResultMapper<
-  PoolInfo,
+  PoolInfoV2,
   'get_pool_coins',
   MappedPoolInfo
 > = (res) => ({

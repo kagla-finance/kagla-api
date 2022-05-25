@@ -29,6 +29,8 @@ import { LiquidityGauge } from './gauge'
  *          type: array
  *          items:
  *            $ref: '#/components/schemas/PoolUnderlyingCoin'
+ *        zapper:
+ *          type: string
  *        apy:
  *          type: string
  *        parameters:
@@ -56,6 +58,7 @@ export type Pool = {
   assetType: ValueOf<typeof AssetType>
   coins: PoolCoin[]
   underlyingCoins: PoolUnderlyingCoin[]
+  zapper?: string
   apy?: string
   parameters: PoolParameters
   gauges: LiquidityGauge[]
@@ -78,6 +81,8 @@ export type Pool = {
  *          $ref: '#/components/schemas/Balance'
  *        underlyingBalances:
  *          $ref: '#/components/schemas/Balance'
+ *        basePoolUnderlyingBalances:
+ *          $ref: '#/components/schemas/Balance'
  *        apy:
  *          type: string
  *        parameters:
@@ -99,6 +104,7 @@ export type PoolMarketData = {
   basePoolLPToken?: LPTokenMarketData
   balances: Balance
   underlyingBalances: Balance
+  basePoolUnderlyingBalances?: Balance
   parameters: PoolParameters
   gauges: LiquidityGauge[]
   apy?: string
