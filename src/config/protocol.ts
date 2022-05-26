@@ -24,6 +24,10 @@ type ProtocolConfig = {
     minter: string
     diaOracle?: string
   }
+  arthswapDataProvider?: {
+    endpoint: string
+    quoteTokenAddress: string
+  }
   eolGauges?: string[]
 }
 
@@ -37,6 +41,10 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
       multiCall: '0x7D6046156df81EF335E7e765d3bc714960B73207',
     },
     rpcUrls: ['https://evm.astar.network'],
+    arthswapDataProvider: {
+      endpoint: 'https://arthswap-apr-api.vercel.app/api/graphql',
+      quoteTokenAddress: '0xAeaaf0e2c81Af264101B9129C00F4440cCF0F720',
+    },
     storageEndpoint: 'https://kagla-stats-astar.s3.amazonaws.com',
   },
   [CHAIN_ID.shiden]: {
