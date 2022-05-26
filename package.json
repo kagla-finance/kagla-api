@@ -12,6 +12,7 @@
     "test": "jest --watch",
     "test:once": "jest",
     "postinstall": "yarn codegen",
+    "codegen": "yarn codegen:contract && yarn codegen:graphql",
     "codegen:contract": "rm -rf src/contracts/__generated__/ && typechain --target ethers-v5 --out-dir src/contracts/__generated__/ 'docs/abi/*.json'",
     "codegen:graphql": "graphql-codegen --config docs/graphql/codegen.yml"
   },
