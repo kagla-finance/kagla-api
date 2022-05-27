@@ -1,6 +1,5 @@
 import { ethers, providers, Signer } from 'ethers'
 import { getProtocolConfig } from 'src/config'
-import { KGL_PRICE_IN_USD } from 'src/constants'
 import { LiquidityGauge } from 'src/models/gauge'
 import { MarketOverview } from 'src/models/market'
 import {
@@ -57,6 +56,7 @@ export class PoolInfoService implements IPoolInfoService {
     readonly erc20MultiCall: IERC20MultiCallService,
     readonly stats: IStatsService,
     readonly price: IPriceService,
+    readonly kglPrice: () => Promise<number>,
   ) {}
 
   static new = (
@@ -71,6 +71,7 @@ export class PoolInfoService implements IPoolInfoService {
       erc20MultiCall: IERC20MultiCallService
       stats: IStatsService
       price: IPriceService
+      kglPrice: () => Promise<number>
     },
   ) =>
     new PoolInfoService(
@@ -84,6 +85,7 @@ export class PoolInfoService implements IPoolInfoService {
       dependencies.erc20MultiCall,
       dependencies.stats,
       dependencies.price,
+      dependencies.kglPrice,
     )
 
   listPools: IPoolInfoService['listPools'] = async (
@@ -257,7 +259,8 @@ export class PoolInfoService implements IPoolInfoService {
   ) => {
     const { eolGauges } = getProtocolConfig()
 
-    const { poolInfo, multiCall, price } = this
+    const { poolInfo, multiCall, price, kglPrice } = this
+    const kglPriceInUSD = await kglPrice()
     const multicallData = await Promise.all(
       addresses.map(this.createPoolMultiCallData),
     )
@@ -298,7 +301,7 @@ export class PoolInfoService implements IPoolInfoService {
                 : // not supported yet
                   BN_ZERO,
               // other rewards not supported yet
-              rewardPrice: KGL_PRICE_IN_USD,
+              rewardPrice: kglPriceInUSD,
               lpTokenVirtualPrice: normalizeBn(pool.lpToken.virtualPrice),
             },
           )

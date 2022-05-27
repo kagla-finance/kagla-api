@@ -1,4 +1,5 @@
 import { FallbackProvider, JsonRpcProvider } from '@ethersproject/providers'
+import { getKGLPrice } from 'src/api/arthswap'
 import { ChainId, getProtocolConfig } from 'src/config'
 import { AddressProviderService } from 'src/contracts/addressProvider'
 import { ERC20MultiCallService } from 'src/contracts/erc20'
@@ -28,6 +29,10 @@ export const poolInfoService = (chainId?: ChainId): IPoolInfoService => {
     price: priceService(),
     erc20MultiCall,
     multiCall,
+    kglPrice: () =>
+      minterService(chainId)
+        .getKGLToken()
+        .then(({ address }) => getKGLPrice(address, chainId)),
   })
   return service
 }
