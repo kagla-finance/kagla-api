@@ -35,7 +35,7 @@ export class AddressProviderService implements IAddressProvider {
     const { data: addressInfoList } = await multiCall.callByIndex({
       contract: addressProvider,
       functionName: 'get_id_info',
-      count: numOfAddresses.toNumber(),
+      count: numOfAddresses.toNumber() - 1,
     })
 
     return addressInfoList.map((info) => ({
