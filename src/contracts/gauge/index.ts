@@ -1,6 +1,11 @@
 import { BigNumber, BigNumberish, BytesLike, providers, Signer } from 'ethers'
 import { WORST_APR_RATIO } from 'src/constants'
-import { GaugeAllocation, LiquidityGauge, StakingData } from 'src/models/gauge'
+import {
+  GaugeAllocation,
+  LiquidityGauge,
+  StakingData,
+  UserGaugeInfo,
+} from 'src/models/gauge'
 import {
   BigNumberJs,
   BN_ZERO,
@@ -35,10 +40,16 @@ type GaugeAllocationResponse = {
   data: GaugeAllocation
 }
 
+type UserGaugeInfoResponse = {
+  blockNumber: string
+  data: UserGaugeInfo[]
+}
+
 export type IGaugeService = {
   getCurrentAllocation: () => Promise<GaugeAllocationResponse>
   getNextAllocation: () => Promise<GaugeAllocationResponse>
   getStakingData: (owner: string) => Promise<StakingDataResponse>
+  getUserGaugeData: (owner: string) => Promise<UserGaugeInfoResponse>
   createGaugeMutilCallData: (address: string) => MultiCallData[]
   mapGaugeMutilCallResults: (
     gaugeInfo: { address: string; type: string },
@@ -248,6 +259,62 @@ export class GaugeService implements IGaugeService {
         claimableAmount: result.claimableAmount.toString(),
       },
     }
+  }
+
+  getUserGaugeData: IGaugeService['getUserGaugeData'] = async (owner) => {
+    const { gaugeController, multiCall, iGauge } = this
+    const addresses = await this.listGaugeAdresses()
+
+    const calls = addresses.flatMap((address) => [
+      {
+        target: gaugeController.address,
+        callData: gaugeController.interface.encodeFunctionData(
+          'vote_user_slopes',
+          [owner, address],
+        ),
+      },
+      {
+        target: address,
+        callData: iGauge.encodeFunctionData('balanceOf', [owner]),
+      },
+      {
+        target: address,
+        callData: iGauge.encodeFunctionData('totalSupply'),
+      },
+      {
+        target: address,
+        callData: iGauge.encodeFunctionData('working_balances', [owner]),
+      },
+      {
+        target: address,
+        callData: iGauge.encodeFunctionData('working_supply'),
+      },
+    ])
+    const { blockNumber, returnData } = await multiCall.call(calls)
+    const data: UserGaugeInfo[] = []
+    for (let i = 0; i < addresses.length; i++) {
+      const cursor = i * 5
+      const res: UserGaugeInfo = {
+        address: addresses[i],
+        voted: gaugeController.interface
+          .decodeFunctionResult('vote_user_slopes', returnData[cursor])
+          .power.toString(),
+        originalBalance: iGauge
+          .decodeFunctionResult('balanceOf', returnData[cursor + 1])[0]
+          .toString(),
+        originalSupply: iGauge
+          .decodeFunctionResult('totalSupply', returnData[cursor + 2])[0]
+          .toString(),
+        workingBalance: iGauge
+          .decodeFunctionResult('working_balances', returnData[cursor + 3])[0]
+          .toString(),
+        workingSupply: iGauge
+          .decodeFunctionResult('working_supply', returnData[cursor + 4])[0]
+          .toString(),
+      }
+      data.push(res)
+    }
+    return { blockNumber: blockNumber.toString(), data }
   }
 }
 
