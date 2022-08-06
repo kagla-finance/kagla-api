@@ -104,6 +104,42 @@ export type GaugeAllocation = {
  * @swagger
  * components:
  *  schemas:
+ *    UserGaugeInfo:
+ *      type: object
+ *      properties:
+ *        address:
+ *          type: string
+ *        originalBalance:
+ *          type: string
+ *        originalSupply:
+ *          type: string
+ *        workingBalance:
+ *          type: string
+ *        workingSupply:
+ *          type: string
+ *        voted:
+ *          type: string
+ *      required:
+ *        - address
+ *        - originalBalance
+ *        - originalSupply
+ *        - workingBalance
+ *        - workingSupply
+ *        - voted
+ */
+export type UserGaugeInfo = {
+  address: string
+  originalBalance: string
+  originalSupply: string
+  workingBalance: string
+  workingSupply: string
+  voted: string
+}
+
+/**
+ * @swagger
+ * components:
+ *  schemas:
  *    GaugeInfo:
  *      type: object
  *      properties:
