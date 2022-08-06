@@ -27,7 +27,9 @@ import { asHandler, RequestValidator } from 'src/utils/api'
  *                 blockNumber:
  *                   type: string
  *                 data:
- *                   $ref: '#/components/schemas/UserGaugeInfo'
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/UserGaugeInfo'
  *               required:
  *                 - blockNumber
  *                 - data
