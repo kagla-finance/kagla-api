@@ -264,7 +264,6 @@ export class GaugeService implements IGaugeService {
   getUserGaugeData: IGaugeService['getUserGaugeData'] = async (owner) => {
     const { gaugeController, multiCall, iGauge } = this
     const addresses = await this.listGaugeAdresses()
-    console.log(addresses)
 
     const calls = addresses.flatMap((address) => [
       {
@@ -291,7 +290,6 @@ export class GaugeService implements IGaugeService {
         callData: iGauge.encodeFunctionData('working_supply'),
       },
     ])
-    console.log(calls)
     const { blockNumber, returnData } = await multiCall.call(calls)
     const data: UserGaugeInfo[] = []
     for (let i = 0; i < addresses.length; i++) {
@@ -314,10 +312,8 @@ export class GaugeService implements IGaugeService {
           .decodeFunctionResult('working_supply', returnData[cursor + 4])[0]
           .toString(),
       }
-      console.log(res)
       data.push(res)
     }
-    console.log(data)
     return { blockNumber: blockNumber.toString(), data }
   }
 }
