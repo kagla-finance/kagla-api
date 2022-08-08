@@ -12,13 +12,17 @@
     "test": "jest --watch",
     "test:once": "jest",
     "postinstall": "yarn codegen",
-    "codegen": "rm -rf src/contracts/__generated__/ && typechain --target ethers-v5 --out-dir src/contracts/__generated__/ 'docs/abi/*.json'"
+    "codegen": "yarn codegen:contract && yarn codegen:graphql",
+    "codegen:contract": "rm -rf src/contracts/__generated__/ && typechain --target ethers-v5 --out-dir src/contracts/__generated__/ 'docs/abi/*.json'",
+    "codegen:graphql": "graphql-codegen --config docs/graphql/codegen.yml"
   },
   "dependencies": {
     "assign-deep": "^1.0.1",
     "bignumber.js": "^9.0.2",
     "dayjs": "^1.11.1",
     "ethers": "^5.6.0",
+    "graphql": "^16.3.0",
+    "graphql-request": "^4.2.0",
     "next": "12.1.0",
     "next-swagger-doc": "^0.2.1",
     "react": "17.0.2",
@@ -27,6 +31,11 @@
     "web3": "^1.7.1"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^2.6.2",
+    "@graphql-codegen/schema-ast": "^2.4.1",
+    "@graphql-codegen/typescript": "^2.4.8",
+    "@graphql-codegen/typescript-graphql-request": "^4.4.5",
+    "@graphql-codegen/typescript-operations": "^2.3.5",
     "@swc/core": "^1.2.154",
     "@swc/jest": "^0.2.20",
     "@typechain/ethers-v5": "^9.0.0",
