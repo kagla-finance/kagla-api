@@ -51,13 +51,13 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
   },
   [CHAIN_ID.shiden]: {
     addresses: {
-      addressProvider: '0x1aceb2849e249C5403Fe1331d63587ed43C78425',
-      poolInfo: '0x4E8EF7D584fE8Dc3726045c46e3BaED215A68868',
-      gaugeController: '0xfe372d95BDFE7313435D539c87E68029A792997e',
-      minter: '0xa6358181b2753DAC5d2Ade97519E7c1A766d9c87',
+      addressProvider: '0x54BabC496c70510ad85722BD98dab1757e291C67',
+      poolInfo: '0xC3E9167907F22a3E6302F4Fa5e43A18e71F02AE7',
+      gaugeController: '0x914d6C71f5E781d62C2CA94793FAC11a3a60E874',
+      minter: '0xb359c05953D2b00400cE6741B7da005Bbb9A058E',
       multiCall: '0xB6E580BF400d8DEb17dacDD67734d399367e7f94',
       diaOracle: '0xCe784F99f87dBa11E0906e2fE954b08a8cc9815d',
-      zapperUSD: '0xAa86921556718Cd97DA1d1Ba8c51785B5FB5Fe32',
+      zapperUSD: '0xFcd6557BCB0bA7CB80305a5E27Fc16ea878A847F',
     },
     rpcUrls: ['https://shiden.api.onfinality.io/public'],
     storageEndpoint: 'https://kagla-stats-shiden.s3.amazonaws.com',
