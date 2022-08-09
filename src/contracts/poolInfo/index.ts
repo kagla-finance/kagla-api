@@ -407,7 +407,7 @@ const getPoolInfoMapper: FunctionResultMapper<
     ...coin,
     balance: res.underlying_balances[idx].toString(),
   })),
-  zapper: addressOr(res.zap),
+  zapper: getProtocolConfig().addresses.zapperUSD,
 })
 
 const getPoolCoinsMapper: FunctionResultMapper<
