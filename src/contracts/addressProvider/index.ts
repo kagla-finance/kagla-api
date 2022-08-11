@@ -46,5 +46,6 @@ export class AddressProviderService implements IAddressProvider {
   }
 
   getRegisryAddress: IAddressProvider['getRegisryAddress'] = async () =>
-    this.addressProvider.get_address(0)
+    '0xB4d5dbB8989334891a98099f72A63878e0540653'
+  // this.addressProvider.get_address(0)
 }

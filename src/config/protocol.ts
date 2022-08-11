@@ -35,7 +35,7 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
   [CHAIN_ID.astar]: {
     addresses: {
       addressProvider: '0x5a0ad8337E5C6895b3893E80c8333859DAcf7c01',
-      poolInfo: '0x739523E332c0f2306896c530721271c9467575D9',
+      poolInfo: '0xf47c6B2159decBCc44f69d3F08a3d41695b7b190',
       gaugeController: '0x1f857fB3bCb72F03cB210f62602fD45eE1caeBdf',
       minter: '0x210c5BE93182d02A666392996f62244001e6E04d',
       multiCall: '0x7D6046156df81EF335E7e765d3bc714960B73207',
