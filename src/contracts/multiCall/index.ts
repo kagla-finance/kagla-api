@@ -132,14 +132,9 @@ export class MultiCallService implements IMultiCallService {
         callData: callDatum,
       })),
     )
-    const data =
-      count - from === 1
-        ? multiCallResponse.returnData.map((data) =>
-            iContract.decodeFunctionResult(functionName, data),
-          )
-        : multiCallResponse.returnData.flatMap((data) =>
-            iContract.decodeFunctionResult(functionName, data),
-          )
+    const data = multiCallResponse.returnData.map((data) =>
+      iContract.decodeFunctionResult(functionName, data),
+    ) as any[]
 
     return {
       blockNumber: multiCallResponse.blockNumber,
