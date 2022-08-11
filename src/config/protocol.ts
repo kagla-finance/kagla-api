@@ -40,9 +40,9 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
       gaugeController: '0x1f857fB3bCb72F03cB210f62602fD45eE1caeBdf',
       minter: '0x210c5BE93182d02A666392996f62244001e6E04d',
       multiCall: '0x7D6046156df81EF335E7e765d3bc714960B73207',
-      zapperUSD: '0xTODO',
+      zapperUSD: '0xdCE92E5c01f080066aF9e9bC5F7544d345e938d9',
     },
-    rpcUrls: ['https://evm.astar.network'],
+    rpcUrls: ['https://astar.api.onfinality.io/public'],
     arthswapDataProvider: {
       endpoint: 'https://arthswap-apr-api.vercel.app/api/graphql',
       quoteTokenAddress: '0xAeaaf0e2c81Af264101B9129C00F4440cCF0F720',
