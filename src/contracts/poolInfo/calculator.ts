@@ -1,4 +1,4 @@
-import { Balance } from 'src/models/balance'
+import { PoolBalance } from 'src/models/balance'
 import { AssetType } from 'src/models/pool'
 import { AssetPrices } from 'src/models/price'
 import { BigNumberJs, BN_ZERO, normalizeBn } from 'src/utils/number'
@@ -9,10 +9,9 @@ export const calculatePoolsTVL = (
     isMeta: boolean
     assetType: ValueOf<typeof AssetType>
     coins: { address: string; decimals: number }[]
-    balances: Balance
+    balances: PoolBalance
     lpToken: { totalSupply: string; virtualPrice: string }
   }[],
-  lpTokenAddresses: string[],
   assetPrices: AssetPrices,
 ) =>
   pools.reduce((res, pool) => {
@@ -22,7 +21,7 @@ export const calculatePoolsTVL = (
       return res
     }
     if (pool.isMeta) {
-      return res.plus(calculateMetaPoolTVL(pool, lpTokenAddresses, assetPrice))
+      return res.plus(calculateMetaPoolTVL(pool, assetPrice))
     }
     return res.plus(calculateBasePoolTVL(pool, assetPrice))
   }, BN_ZERO)
@@ -43,17 +42,10 @@ const calculateBasePoolTVL = (
 const calculateMetaPoolTVL = (
   pool: {
     coins: { address: string; decimals: number }[]
-    balances: Balance
+    balances: PoolBalance
   },
-  lpTokenAddresses: string[],
   assetPrice: BigNumberJs,
 ) => {
-  const poolTVL = pool.coins
-    .filter(({ address }) => !lpTokenAddresses.includes(address))
-    .reduce(
-      (poolTVL, { address, decimals }) =>
-        poolTVL.plus(normalizeBn(pool.balances[address], decimals)),
-      BN_ZERO,
-    )
+  const poolTVL = normalizeBn(pool.balances[0], pool.coins[0].decimals)
   return poolTVL.times(assetPrice).decimalPlaces(18, BigNumberJs.ROUND_FLOOR)
 }

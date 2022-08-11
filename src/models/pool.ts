@@ -1,5 +1,5 @@
 import { ValueOf } from 'type-fest'
-import { Balance } from './balance'
+import { PoolBalance } from './balance'
 import { LiquidityGauge } from './gauge'
 
 /**
@@ -78,11 +78,11 @@ export type Pool = {
  *        basePoolLPToken:
  *          $ref: '#/components/schemas/LPTokenMarketData'
  *        balances:
- *          $ref: '#/components/schemas/Balance'
+ *          $ref: '#/components/schemas/PoolBalance'
  *        underlyingBalances:
- *          $ref: '#/components/schemas/Balance'
+ *          $ref: '#/components/schemas/PoolBalance'
  *        basePoolUnderlyingBalances:
- *          $ref: '#/components/schemas/Balance'
+ *          $ref: '#/components/schemas/PoolBalance'
  *        apy:
  *          type: string
  *        parameters:
@@ -102,9 +102,9 @@ export type PoolMarketData = {
   address: string
   lpToken: LPTokenMarketData
   basePoolLPToken?: LPTokenMarketData
-  balances: Balance
-  underlyingBalances: Balance
-  basePoolUnderlyingBalances?: Balance
+  balances: PoolBalance
+  underlyingBalances: PoolBalance
+  basePoolUnderlyingBalances?: PoolBalance
   parameters: PoolParameters
   gauges: LiquidityGauge[]
   apy?: string
@@ -159,9 +159,9 @@ export type LPTokenMarketData = {
  *          items:
  *            $ref: '#/components/schemas/PoolOutlineCoin'
  *        balances:
- *          $ref: '#/components/schemas/Balance'
+ *          $ref: '#/components/schemas/PoolBalance'
  *        underlyingBalances:
- *          $ref: '#/components/schemas/Balance'
+ *          $ref: '#/components/schemas/PoolBalance'
  *        parameters:
  *          $ref: '#/components/schemas/PoolActiveParameters'
  *        isMeta:
@@ -193,8 +193,8 @@ export type PoolOutline = {
   lpToken: LPTokenMarketData
   coins: { address: string; decimals: number }[]
   underlyingCoins: { address: string; decimals: number }[]
-  balances: Balance
-  underlyingBalances: Balance
+  balances: PoolBalance
+  underlyingBalances: PoolBalance
   parameters: PoolActiveParameters
   isMeta: boolean
   basePool?: string
