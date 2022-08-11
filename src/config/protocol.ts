@@ -22,7 +22,6 @@ type ProtocolConfig = {
     poolInfo: string
     gaugeController: string
     minter: string
-    zapperUSD: string
     diaOracle?: string
   }
   arthswapDataProvider?: {
@@ -40,7 +39,6 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
       gaugeController: '0x1f857fB3bCb72F03cB210f62602fD45eE1caeBdf',
       minter: '0x210c5BE93182d02A666392996f62244001e6E04d',
       multiCall: '0x7D6046156df81EF335E7e765d3bc714960B73207',
-      zapperUSD: '0xdCE92E5c01f080066aF9e9bC5F7544d345e938d9',
     },
     rpcUrls: ['https://astar.api.onfinality.io/public'],
     arthswapDataProvider: {
@@ -57,7 +55,6 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
       minter: '0xb359c05953D2b00400cE6741B7da005Bbb9A058E',
       multiCall: '0xB6E580BF400d8DEb17dacDD67734d399367e7f94',
       diaOracle: '0xCe784F99f87dBa11E0906e2fE954b08a8cc9815d',
-      zapperUSD: '0xFcd6557BCB0bA7CB80305a5E27Fc16ea878A847F',
     },
     rpcUrls: ['https://shiden.api.onfinality.io/public'],
     storageEndpoint: 'https://kagla-stats-shiden.s3.amazonaws.com',
