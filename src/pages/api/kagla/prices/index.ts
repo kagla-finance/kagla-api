@@ -1,5 +1,6 @@
-import { priceService } from 'src/factory'
+import { diaPriceService } from 'src/factory/price'
 import { asHandler } from 'src/utils/api'
+
 /**
  * @swagger
  * /api/kagla/prices:
@@ -24,6 +25,6 @@ import { asHandler } from 'src/utils/api'
  *               $ref: '#/components/schemas/Error'
  *
  */
-const handler = asHandler(priceService().getAssetPricesInUSD)
+const handler = asHandler(diaPriceService().getAssetPricesInUSD)
 
 export default handler
