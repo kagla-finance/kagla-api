@@ -8,7 +8,6 @@ import { defaultParameters } from './default'
 
 export const diaPriceService = (chainId?: ChainId) => {
   const params = defaultParameters(chainId)
-  if (!params.diaAddress) return
 
   const addressProvider = AddressProviderService.new(params)
   const erc20MultiCall = ERC20MultiCallService.new(params)

@@ -1,6 +1,6 @@
 import { providers, Signer } from 'ethers'
 import { AssetType } from 'src/models/pool'
-import { normalizeBn } from 'src/utils/number'
+import { BN_ONE, normalizeBn } from 'src/utils/number'
 import { IMultiCallService } from '../multiCall'
 import { IRegistryService } from '../registry'
 import { IDiaAggregator__factory } from '../__generated__/factories/IDiaAggregator__factory'
@@ -9,7 +9,7 @@ import { IPriceService } from './types'
 
 const toDIAKey = (symbol: string) => `${symbol}/USD`
 const DIA_DECIMALS = 8
-const DIA_SYMBOLS = ['USDC', 'BTC', 'ETH']
+const DIA_SYMBOLS = ['WBTC', 'ETH', 'ASTR']
 
 export class PriceServiceDIAImpl implements IPriceService {
   private constructor(
@@ -47,9 +47,19 @@ export class PriceServiceDIAImpl implements IPriceService {
       })),
     })
     return {
-      [AssetType.USD]: normalizeBn(data['0'].getValue.toString(), DIA_DECIMALS),
-      [AssetType.BTC]: normalizeBn(data['1'].getValue.toString(), DIA_DECIMALS),
-      [AssetType.ETH]: normalizeBn(data['2'].getValue.toString(), DIA_DECIMALS),
+      [AssetType.USD]: BN_ONE,
+      [AssetType.BTC]: normalizeBn(
+        data['0'].getValue.price.toString(),
+        DIA_DECIMALS,
+      ),
+      [AssetType.ETH]: normalizeBn(
+        data['1'].getValue.price.toString(),
+        DIA_DECIMALS,
+      ),
+      [AssetType.ASTR]: normalizeBn(
+        data['2'].getValue.price.toString(),
+        DIA_DECIMALS,
+      ),
       [AssetType.OTHER]: {},
       [AssetType.CRYPTO]: {},
     }
