@@ -388,4 +388,5 @@ export const AssetType = {
   ETH: '2',
   OTHER: '3',
   CRYPTO: '4',
+  ASTR: '5',
 } as const

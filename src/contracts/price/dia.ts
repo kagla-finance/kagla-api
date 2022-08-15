@@ -56,9 +56,11 @@ export class PriceServiceDIAImpl implements IPriceService {
         data['1'].getValue.price.toString(),
         DIA_DECIMALS,
       ),
-      [AssetType.OTHER]: {
-        ASTR: normalizeBn(data['2'].getValue.price.toString(), DIA_DECIMALS),
-      },
+      [AssetType.ASTR]: normalizeBn(
+        data['2'].getValue.price.toString(),
+        DIA_DECIMALS,
+      ),
+      [AssetType.OTHER]: {},
       [AssetType.CRYPTO]: {},
     }
   }

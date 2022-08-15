@@ -28,12 +28,16 @@ import { ValueOf } from 'type-fest'
  *          type: object
  *          additionalProperties:
  *            type: string
+ *        "5":
+ *          description: ASTR
+ *          type: string
  *      required:
  *        - "0"
  *        - "1"
  *        - "2"
  *        - "3"
  *        - "4"
+ *        - "5"
  */
 export type AssetPrices = Record<
   Exclude<
