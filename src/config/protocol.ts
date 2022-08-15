@@ -57,7 +57,7 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
       multiCall: '0xB6E580BF400d8DEb17dacDD67734d399367e7f94',
       diaOracle: '0xCe784F99f87dBa11E0906e2fE954b08a8cc9815d',
     },
-    rpcUrls: ['https://shiden.api.onfinality.io/public'],
+    rpcUrls: ['https://shiden.public.blastapi.io'],
     storageEndpoint: 'https://kagla-stats-shiden.s3.amazonaws.com',
   },
 }
