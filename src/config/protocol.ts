@@ -40,7 +40,7 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
       minter: '0x210c5BE93182d02A666392996f62244001e6E04d',
       multiCall: '0x7D6046156df81EF335E7e765d3bc714960B73207',
     },
-    rpcUrls: ['https://evm.astar.network'],
+    rpcUrls: ['https://astar.api.onfinality.io/public'],
     arthswapDataProvider: {
       endpoint: 'https://arthswap-apr-api.vercel.app/api/graphql',
       quoteTokenAddress: '0xAeaaf0e2c81Af264101B9129C00F4440cCF0F720',
@@ -49,10 +49,10 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
   },
   [CHAIN_ID.shiden]: {
     addresses: {
-      addressProvider: '0x1aceb2849e249C5403Fe1331d63587ed43C78425',
-      poolInfo: '0x4E8EF7D584fE8Dc3726045c46e3BaED215A68868',
-      gaugeController: '0xfe372d95BDFE7313435D539c87E68029A792997e',
-      minter: '0xa6358181b2753DAC5d2Ade97519E7c1A766d9c87',
+      addressProvider: '0x54BabC496c70510ad85722BD98dab1757e291C67',
+      poolInfo: '0xC3E9167907F22a3E6302F4Fa5e43A18e71F02AE7',
+      gaugeController: '0x914d6C71f5E781d62C2CA94793FAC11a3a60E874',
+      minter: '0xb359c05953D2b00400cE6741B7da005Bbb9A058E',
       multiCall: '0xB6E580BF400d8DEb17dacDD67734d399367e7f94',
       diaOracle: '0xCe784F99f87dBa11E0906e2fE954b08a8cc9815d',
     },
