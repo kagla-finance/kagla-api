@@ -1,4 +1,4 @@
-import { diaPriceService } from 'src/factory/price'
+import { priceService } from 'src/factory'
 import { asHandler } from 'src/utils/api'
 
 /**
@@ -14,9 +14,7 @@ import { asHandler } from 'src/utils/api'
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/AssetPrices'
+ *               $ref: '#/components/schemas/AssetPrices'
  *       500:
  *         description: Unexpected error
  *         content:
@@ -25,6 +23,6 @@ import { asHandler } from 'src/utils/api'
  *               $ref: '#/components/schemas/Error'
  *
  */
-const handler = asHandler(diaPriceService().getAssetPricesInUSD)
+const handler = asHandler(priceService().getAssetPricesInUSD)
 
 export default handler
