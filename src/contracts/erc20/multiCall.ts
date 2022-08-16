@@ -1,6 +1,8 @@
 import { ethers, Signer } from 'ethers'
+import { NATIVE_ASSET_DUMMY_ADDRESS } from 'src/constants'
 import { Balance } from 'src/models/balance'
 import { Coin } from 'src/models/coin'
+import { isNativeAsset, notNativeAsset } from 'src/utils/address'
 import {
   FunctionResult,
   IMultiCallService,
@@ -26,6 +28,7 @@ export class ERC20MultiCallService implements IERC20MultiCallService {
   private constructor(
     readonly multiCall: IMultiCallService,
     readonly iERC20: IERC20Interface,
+    readonly signerOrProvider: Signer | ethers.providers.Provider,
   ) {}
 
   static new = (params: {
@@ -35,6 +38,7 @@ export class ERC20MultiCallService implements IERC20MultiCallService {
     new ERC20MultiCallService(
       MultiCallService.new(params),
       IERC20__factory.createInterface(),
+      params.signerOrProvider,
     )
 
   view: IERC20MultiCallService['view'] = async (erc20Addresses, fields) => {
@@ -55,16 +59,20 @@ export class ERC20MultiCallService implements IERC20MultiCallService {
     owner: string,
     tokenAddresses: string[],
   ) => {
-    const { multiCall, iERC20 } = this
+    const { multiCall, iERC20, signerOrProvider } = this
     const { blockNumber, data: balances } =
       await multiCall.callViewFunctionsByAddresses<IERC20, string>({
-        targetAddresses: tokenAddresses,
+        targetAddresses: tokenAddresses.filter(notNativeAsset),
         iContract: iERC20,
         viewFuntions: ['balanceOf'],
         argMap: { balanceOf: [owner] },
         resultsMapper: (res) =>
           (res as FunctionResult<IERC20, 'balanceOf'>)[0].toString(),
       })
+    if (tokenAddresses.some(isNativeAsset))
+      balances[NATIVE_ASSET_DUMMY_ADDRESS] = (
+        await signerOrProvider.getBalance(owner)
+      ).toString()
 
     return {
       blockNumber: blockNumber.toString(),

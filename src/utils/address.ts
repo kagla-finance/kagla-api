@@ -1,4 +1,5 @@
 import { ethers } from 'ethers'
+import { NATIVE_ASSET_DUMMY_ADDRESS } from 'src/constants'
 
 export const equals = (
   a: string | null | undefined,
@@ -7,3 +8,9 @@ export const equals = (
 
 export const isAddress = (arg: any): arg is string =>
   ethers.utils.isAddress(arg)
+
+export const isNativeAsset = (arg: string | null | undefined) =>
+  equals(arg, NATIVE_ASSET_DUMMY_ADDRESS)
+
+export const notNativeAsset = (arg: string | null | undefined) =>
+  !isNativeAsset(arg)
