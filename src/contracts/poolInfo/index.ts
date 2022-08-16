@@ -1,5 +1,6 @@
 import { ethers, providers, Signer } from 'ethers'
 import { getProtocolConfig } from 'src/config'
+import { NATIVE_ASSET_INFO } from 'src/constants'
 import { LiquidityGauge } from 'src/models/gauge'
 import { MarketOverview } from 'src/models/market'
 import {
@@ -11,7 +12,7 @@ import {
   PoolUnderlyingCoin,
 } from 'src/models/pool'
 import { IStatsService } from 'src/storage/Stats'
-import { equals } from 'src/utils/address'
+import { equals, isNativeAsset, notNativeAsset } from 'src/utils/address'
 import { filterFalsy } from 'src/utils/array'
 import { BigNumberJs, BN_ZERO, normalizeBn } from 'src/utils/number'
 import { addressOr, bigNumberOr } from 'src/utils/optional'
@@ -142,9 +143,10 @@ export class PoolInfoService implements IPoolInfoService {
       pools: [pool],
     } = await this.poolMultiCall(false, address)
     if (!pool) return { blockNumber }
-    const coinAddresses = pool.coins
-      .map(({ address }) => address)
-      .concat(pool.underlyingCoins.map(({ address }) => address))
+    const coinAddresses = [
+      ...pool.coins.map(({ address }) => address),
+      ...pool.underlyingCoins.map(({ address }) => address),
+    ].filter(notNativeAsset)
     const { data: coinData } = await this.erc20MultiCall.view(coinAddresses, [
       'symbol',
       'name',
@@ -157,10 +159,14 @@ export class PoolInfoService implements IPoolInfoService {
         address,
         coins: pool.coins.map((coin) => {
           const coinDatum = coinData[coin.address]
+          if (isNativeAsset(coin.address))
+            return { ...coin, ...NATIVE_ASSET_INFO }
           return { ...coin, ...coinDatum }
         }),
         underlyingCoins: pool.underlyingCoins.map((coin) => {
           const coinDatum = coinData[coin.address]
+          if (isNativeAsset(coin.address))
+            return { ...coin, ...NATIVE_ASSET_INFO }
           return { ...coin, ...coinDatum }
         }),
         apy: apyStats?.apy.day[pool.name]?.toString(),
