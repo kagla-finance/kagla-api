@@ -14,9 +14,7 @@ import { asHandler } from 'src/utils/api'
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/AssetPrices'
+ *               $ref: '#/components/schemas/AssetPrices'
  *       500:
  *         description: Unexpected error
  *         content:

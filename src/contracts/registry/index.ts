@@ -1,6 +1,7 @@
 import { ethers, providers, Signer } from 'ethers'
+import { NATIVE_ASSET_INFO } from 'src/constants'
 import { Coin } from 'src/models/coin'
-import { equals } from 'src/utils/address'
+import { equals, isNativeAsset, notNativeAsset } from 'src/utils/address'
 import { unique } from 'src/utils/array'
 import { IAddressProvider } from '../addressProvider'
 import { ERC20ViewFunction, IERC20MultiCallService } from '../erc20'
@@ -99,27 +100,35 @@ export class RegistryService implements IRegistryService {
   listCoins: IRegistryService['listCoins'] = async () => {
     const { listCoinAddresses, erc20MultiCall } = this
     const coinAddresses = await listCoinAddresses()
+    const nativeAssetIndex = coinAddresses.findIndex(isNativeAsset)
     const { data: coins } = await erc20MultiCall.view(
-      coinAddresses,
+      coinAddresses.filter(notNativeAsset),
       COINS_FIELDS,
     )
-    return Object.entries(coins).map(([address, coin]) => ({
+    const res = Object.entries(coins).map(([address, coin]) => ({
       address,
       ...coin,
     }))
+    if (nativeAssetIndex < 0) return res
+    res.splice(nativeAssetIndex, 0, NATIVE_ASSET_INFO)
+    return res
   }
 
   listUnderlyingCoins: IRegistryService['listUnderlyingCoins'] = async () => {
     const { erc20MultiCall } = this
     const coinAddresses = await this.listUnderlyingCoinAddresses()
+    const nativeAssetIndex = coinAddresses.findIndex(isNativeAsset)
     const { data: coins } = await erc20MultiCall.view(
-      coinAddresses,
+      coinAddresses.filter(notNativeAsset),
       COINS_FIELDS,
     )
-    return Object.entries(coins).map(([address, coin]) => ({
+    const res = Object.entries(coins).map(([address, coin]) => ({
       address,
       ...coin,
     }))
+    if (nativeAssetIndex < 0) return res
+    res.splice(nativeAssetIndex, 0, NATIVE_ASSET_INFO)
+    return res
   }
 
   listLPTokens: IRegistryService['listLPTokens'] = async () => {

@@ -12,6 +12,7 @@ export class PriceServiceStaticImpl implements IPriceService {
       [AssetType.USD]: BN_ONE,
       [AssetType.BTC]: BN_ZERO,
       [AssetType.ETH]: BN_ZERO,
+      [AssetType.ASTR]: BN_ZERO,
       [AssetType.OTHER]: {},
       [AssetType.CRYPTO]: {},
     }

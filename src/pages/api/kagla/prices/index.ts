@@ -1,5 +1,6 @@
 import { priceService } from 'src/factory'
 import { asHandler } from 'src/utils/api'
+
 /**
  * @swagger
  * /api/kagla/prices:
@@ -13,9 +14,7 @@ import { asHandler } from 'src/utils/api'
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/AssetPrices'
+ *               $ref: '#/components/schemas/AssetPrices'
  *       500:
  *         description: Unexpected error
  *         content:
