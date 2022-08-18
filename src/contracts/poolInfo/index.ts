@@ -240,6 +240,7 @@ export class PoolInfoService implements IPoolInfoService {
             type: g.type,
             minAPR: g.minAPR,
             maxAPR: g.maxAPR,
+            extraRewards: g.extraRewards,
           })),
         })),
       },

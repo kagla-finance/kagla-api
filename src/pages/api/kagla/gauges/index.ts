@@ -44,6 +44,7 @@ const handler = asHandler(async () => {
           address: p.lpToken.address,
           symbol: p.lpToken.symbol,
         },
+        extraRewards: g.extraRewards,
       })),
     ),
   }
