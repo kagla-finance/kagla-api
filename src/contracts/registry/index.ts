@@ -59,7 +59,7 @@ export class RegistryService implements IRegistryService {
         functionName: 'get_coin',
         count: numOfCoins.toNumber(),
       })
-      .then(({ data: coins }) => coins.flatMap((e) => e))
+      .then(({ data: coins }) => unique(coins.flatMap((e) => e)))
   }
 
   listUnderlyingCoinAddresses: IRegistryService['listUnderlyingCoinAddresses'] =
@@ -94,7 +94,7 @@ export class RegistryService implements IRegistryService {
         get_lp_token: [address] as [string],
       })),
     })
-    return Object.values(data).flatMap((datum) => datum['get_lp_token'])
+    return unique(Object.values(data).flatMap((datum) => datum['get_lp_token']))
   }
 
   listCoins: IRegistryService['listCoins'] = async () => {
