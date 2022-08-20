@@ -6,6 +6,7 @@ import {
   StakingData,
   UserGaugeInfo,
 } from 'src/models/gauge'
+import { isValidAddress } from 'src/utils/address'
 import {
   BigNumberJs,
   BN_ZERO,
@@ -159,7 +160,8 @@ export class GaugeService implements IGaugeService {
       this.multiCall.createViewFunctionsCallDataByAddresses<LiquidityGaugeV3>({
         iContract: this.iGauge,
         targetAddresses: [address],
-        viewFuntions: ['inflation_rate', 'working_supply'],
+        viewFuntions: ['inflation_rate', 'working_supply', 'reward_tokens'],
+        argMap: { reward_tokens: [0] },
       }),
       this.multiCall.createViewFunctionsCallDataByArgs({
         contract: this.gaugeController,
@@ -174,7 +176,7 @@ export class GaugeService implements IGaugeService {
     startIndex,
     { rewardPrice, assetPrice, lpTokenVirtualPrice },
   ) => {
-    const { inflationRate, workingSupply, relativeWeight } =
+    const { inflationRate, workingSupply, relativeWeight, rewardTokens } =
       gaugeMultiCallResultMapper(
         this.iGauge,
         this.gaugeController.interface,
@@ -204,10 +206,11 @@ export class GaugeService implements IGaugeService {
       relativeWeight,
       minAPR: minAPR.toString(),
       maxAPR: minAPR.div(WORST_APR_RATIO).toString(),
+      extraRewards: rewardTokens,
     }
     return {
       gauge,
-      nextIndex: startIndex + 3,
+      nextIndex: startIndex + 4,
     }
   }
   getStakingData: IGaugeService['getStakingData'] = async (owner: string) => {
@@ -330,11 +333,14 @@ const gaugeMultiCallResultMapper = (
   workingSupply: iGauge
     .decodeFunctionResult('working_supply', results[startIndex + 1])[0]
     .toString(),
+  rewardTokens: [
+    iGauge.decodeFunctionResult('reward_tokens', results[startIndex + 2])[0],
+  ].filter(isValidAddress),
   relativeWeight: iGaugeController
     .decodeFunctionResult(
       // @ts-ignore
       'gauge_relative_weight(address)',
-      results[startIndex + 2],
+      results[startIndex + 3],
     )[0]
     .toString(),
 })

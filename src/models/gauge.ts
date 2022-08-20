@@ -18,9 +18,13 @@ import { Balance } from './balance'
  *        relativeWeight:
  *          type: string
  *        minAPR:
- *           type: string
+ *          type: string
  *        maxAPR:
- *           type: string
+ *          type: string
+ *        extraRewards:
+ *          type: array
+ *          items:
+ *            type: string
  *      required:
  *        - address
  *        - type
@@ -29,6 +33,7 @@ import { Balance } from './balance'
  *        - relativeWeight
  *        - minAPR
  *        - maxAPR
+ *        - extraRewards
  */
 export type LiquidityGauge = {
   address: string
@@ -38,6 +43,7 @@ export type LiquidityGauge = {
   relativeWeight: string
   minAPR: string
   maxAPR: string
+  extraRewards: string[]
 }
 
 /**
@@ -157,10 +163,15 @@ export type UserGaugeInfo = {
  *          required:
  *            - address
  *            - symbol
+ *        extraRewards:
+ *          type: array
+ *          items:
+ *            type: string
  *      required:
  *        - address
  *        - poolName
  *        - lpToken
+ *        - extraRewards
  */
 export type GaugeInfo = {
   address: string
@@ -169,4 +180,5 @@ export type GaugeInfo = {
     address: string
     symbol: string
   }
+  extraRewards: string[]
 }
