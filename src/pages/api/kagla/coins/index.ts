@@ -1,5 +1,5 @@
 import { registryService } from 'src/factory'
-import { asHandler } from 'src/utils/api'
+import { asHandler, cacheControl } from 'src/utils/api'
 /**
  * @swagger
  * /api/kagla/coins:
@@ -23,6 +23,10 @@ import { asHandler } from 'src/utils/api'
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-const handler = asHandler(() => registryService().listCoins())
+const handler = asHandler(registryService().listCoins, {
+  headers: {
+    'Cache-Control': cacheControl(30, 60),
+  },
+})
 
 export default handler
