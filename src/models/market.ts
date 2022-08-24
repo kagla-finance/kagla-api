@@ -27,11 +27,16 @@
  *                      type: string
  *                    maxAPR:
  *                      type: string
+ *                    extraRewards:
+ *                      type: array
+ *                      items:
+ *                        type: string
  *                  required:
  *                     - address
  *                     - type
  *                     - minAPR
  *                     - maxAPR
+ *                     - extraRewards
  *            required:
  *              - address
  *              - gauges
@@ -47,6 +52,7 @@ export type MarketOverview = {
       type: string
       minAPR: string
       maxAPR: string
+      extraRewards: string[]
     }[]
   }[]
 }

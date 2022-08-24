@@ -14,3 +14,6 @@ export const isNativeAsset = (arg: string | null | undefined) =>
 
 export const notNativeAsset = (arg: string | null | undefined) =>
   !isNativeAsset(arg)
+
+export const isValidAddress = (arg: any): arg is string =>
+  isAddress(arg) && !equals(arg, ethers.constants.AddressZero)
