@@ -50,10 +50,10 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
   },
   [CHAIN_ID.shiden]: {
     addresses: {
-      addressProvider: '0x54BabC496c70510ad85722BD98dab1757e291C67',
-      poolInfo: '0xC3E9167907F22a3E6302F4Fa5e43A18e71F02AE7',
-      gaugeController: '0x914d6C71f5E781d62C2CA94793FAC11a3a60E874',
-      minter: '0xb359c05953D2b00400cE6741B7da005Bbb9A058E',
+      addressProvider: '0x762b149eA23070d6F021F70CB8877d2248278855',
+      poolInfo: '0x64Aa34dec0eB81B21e4869Ac942A60bd21BebE87',
+      gaugeController: '0xBEDcfA1EB6cf39dd829207147692C0eaeCe32065',
+      minter: '0x5dE0CF708F7753F176F1d23229c0EE50a23872f7',
       multiCall: '0xB6E580BF400d8DEb17dacDD67734d399367e7f94',
       diaOracle: '0xCe784F99f87dBa11E0906e2fE954b08a8cc9815d',
     },
