@@ -1,3 +1,4 @@
+import { AssetType, AssetTypeValue } from 'src/models/pool'
 import { ChainId, CHAIN_ID, DEFAULT_CHAIN_ID, isSupportedChain } from './chain'
 import { getEolGauges } from './eolGauges'
 
@@ -27,6 +28,7 @@ type ProtocolConfig = {
   arthswapDataProvider?: {
     endpoint: string
     quoteTokenAddress: string
+    assets: Partial<Record<AssetTypeValue, string>>
   }
   eolGauges?: string[]
 }
@@ -45,6 +47,9 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
     arthswapDataProvider: {
       endpoint: 'https://arthswap-apr-api.vercel.app/api/graphql',
       quoteTokenAddress: '0xAeaaf0e2c81Af264101B9129C00F4440cCF0F720',
+      assets: {
+        [AssetType.KGL]: '0x257f1a047948f73158DaDd03eB84b34498bCDc60',
+      },
     },
     storageEndpoint: 'https://kagla-stats-astar.s3.amazonaws.com',
   },

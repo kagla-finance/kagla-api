@@ -1,6 +1,6 @@
 import { providers, Signer } from 'ethers'
 import { AssetType } from 'src/models/pool'
-import { BN_ONE, normalizeBn } from 'src/utils/number'
+import { BN_ONE, BN_ZERO, normalizeBn } from 'src/utils/number'
 import { IMultiCallService } from '../multiCall'
 import { IRegistryService } from '../registry'
 import { IDiaAggregator__factory } from '../__generated__/factories/IDiaAggregator__factory'
@@ -60,6 +60,7 @@ export class PriceServiceDIAImpl implements IPriceService {
         data['2'].getValue.price.toString(),
         DIA_DECIMALS,
       ),
+      [AssetType.KGL]: BN_ZERO,
       [AssetType.OTHER]: {},
       [AssetType.CRYPTO]: {},
     }

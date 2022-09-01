@@ -9,7 +9,7 @@ import { MultiCallService } from 'src/contracts/multiCall'
 import { IPoolInfoService, PoolInfoService } from 'src/contracts/poolInfo'
 import { RegistryService } from 'src/contracts/registry'
 import { StatsService } from 'src/storage/Stats'
-import { diaPriceService } from './price'
+import { diaAndArthSwapPriceService } from './price'
 
 export const poolInfoService = (chainId?: ChainId): IPoolInfoService => {
   const params = defaultParameters(chainId)
@@ -60,7 +60,8 @@ export const minterService = (chainId?: ChainId) => {
     erc20: ERC20MultiCallService.new(params),
   })
 }
-export const priceService = (chainId?: ChainId) => diaPriceService(chainId)
+export const priceService = (chainId?: ChainId) =>
+  diaAndArthSwapPriceService(chainId)
 
 export const defaultParameters = (chainId?: ChainId) => {
   const { rpcUrls, addresses, storageEndpoint } = getProtocolConfig(chainId)

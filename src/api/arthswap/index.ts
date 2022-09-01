@@ -27,3 +27,29 @@ export const getKGLPrice = async (
     .times(quoteTokenPriceInUSD)
     .toNumber()
 }
+
+export const getPrices = async (
+  tokenAddresses: string[],
+  chainId?: ChainId,
+): Promise<Partial<Record<string, string>>> => {
+  const { arthswapDataProvider } = getProtocolConfig(chainId)
+  if (!arthswapDataProvider) return {}
+  const client = graphqlClient(arthswapDataProvider.endpoint)
+  const res = await client.ListPrices({
+    input: {
+      quoteToken: arthswapDataProvider.quoteTokenAddress,
+      tokens: tokenAddresses,
+    },
+  })
+  const quoteTokenPriceInUSD = res.getPrices.quoteTokenPriceInUSD
+  if (!quoteTokenPriceInUSD) throw new Error('Price not found.')
+  return res.getPrices.prices.reduce((res, price) => {
+    if (!price.priceInQuoteToken) return res
+    return {
+      ...res,
+      [price.token]: new BigNumberJs(price.priceInQuoteToken)
+        .times(quoteTokenPriceInUSD)
+        .toString(),
+    }
+  }, {})
+}

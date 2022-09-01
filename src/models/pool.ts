@@ -389,4 +389,7 @@ export const AssetType = {
   OTHER: '3',
   CRYPTO: '4',
   ASTR: '5',
+  KGL: '6',
 } as const
+
+export type AssetTypeValue = ValueOf<typeof AssetType>
