@@ -43,7 +43,7 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
       multiCall: '0x7D6046156df81EF335E7e765d3bc714960B73207',
       diaOracle: '0x35490A8AC7cD0Df5C4d7Ab4243A6B517133BcDB1',
     },
-    rpcUrls: ['https://astar.api.onfinality.io/public'],
+    rpcUrls: ['https://evm.astar.network'],
     arthswapDataProvider: {
       endpoint: 'https://arthswap-apr-api.vercel.app/api/graphql',
       quoteTokenAddress: '0xAeaaf0e2c81Af264101B9129C00F4440cCF0F720',
