@@ -31,6 +31,12 @@ import { ValueOf } from 'type-fest'
  *        "5":
  *          description: ASTR
  *          type: string
+ *        "6":
+ *          description: KGL
+ *          type: string
+ *        "7":
+ *          description: LAY
+ *          type: string
  *      required:
  *        - "0"
  *        - "1"
@@ -38,6 +44,8 @@ import { ValueOf } from 'type-fest'
  *        - "3"
  *        - "4"
  *        - "5"
+ *        - "6"
+ *        - "7"
  */
 export type AssetPrices = Record<
   Exclude<
