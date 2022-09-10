@@ -390,6 +390,7 @@ export const AssetType = {
   CRYPTO: '4',
   ASTR: '5',
   KGL: '6',
+  LAY: '7',
 } as const
 
 export type AssetTypeValue = ValueOf<typeof AssetType>

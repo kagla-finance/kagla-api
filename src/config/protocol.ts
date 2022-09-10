@@ -49,6 +49,7 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
       quoteTokenAddress: '0xAeaaf0e2c81Af264101B9129C00F4440cCF0F720',
       assets: {
         [AssetType.KGL]: '0x257f1a047948f73158DaDd03eB84b34498bCDc60',
+        [AssetType.LAY]: '0xc4335B1b76fA6d52877b3046ECA68F6E708a27dd',
       },
     },
     storageEndpoint: 'https://kagla-stats-astar.s3.amazonaws.com',
