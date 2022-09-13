@@ -61,6 +61,7 @@ export class PriceServiceDIAImpl implements IPriceService {
         DIA_DECIMALS,
       ),
       [AssetType.KGL]: BN_ZERO,
+      [AssetType.LAY]: BN_ZERO,
       [AssetType.OTHER]: {},
       [AssetType.CRYPTO]: {},
     }
