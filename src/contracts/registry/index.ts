@@ -1,8 +1,9 @@
 import { ethers, providers, Signer } from 'ethers'
-import { NATIVE_ASSET_INFO, OVERWRITE_COINS } from 'src/constants'
+import { NATIVE_ASSET_INFO } from 'src/constants'
 import { Coin } from 'src/models/coin'
 import { equals, isNativeAsset, notNativeAsset } from 'src/utils/address'
 import { unique } from 'src/utils/array'
+import { overwriteCoins } from 'src/utils/coin'
 import { IAddressProvider } from '../addressProvider'
 import { ERC20ViewFunction, IERC20MultiCallService } from '../erc20'
 import { IMultiCallService } from '../multiCall'
@@ -173,10 +174,3 @@ export class RegistryService implements IRegistryService {
     return Registry__factory.connect(address, this.signerOrProvider)
   }
 }
-
-const overwriteCoins = (coins: Coin[]): Coin[] =>
-  coins.map((coin) => {
-    const overwrite = OVERWRITE_COINS[coin.address]
-    if (!overwrite) return coin
-    return { ...coin, ...overwrite } as Coin
-  })
