@@ -1,5 +1,5 @@
 import { ethers, providers, Signer } from 'ethers'
-import { NATIVE_ASSET_INFO } from 'src/constants'
+import { NATIVE_ASSET_INFO, OVERWRITE_COINS } from 'src/constants'
 import { Coin } from 'src/models/coin'
 import { equals, isNativeAsset, notNativeAsset } from 'src/utils/address'
 import { unique } from 'src/utils/array'
@@ -111,7 +111,7 @@ export class RegistryService implements IRegistryService {
     }))
     if (nativeAssetIndex < 0) return res
     res.splice(nativeAssetIndex, 0, NATIVE_ASSET_INFO)
-    return res
+    return overwriteCoins(res)
   }
 
   listUnderlyingCoins: IRegistryService['listUnderlyingCoins'] = async () => {
@@ -128,7 +128,7 @@ export class RegistryService implements IRegistryService {
     }))
     if (nativeAssetIndex < 0) return res
     res.splice(nativeAssetIndex, 0, NATIVE_ASSET_INFO)
-    return res
+    return overwriteCoins(res)
   }
 
   listLPTokens: IRegistryService['listLPTokens'] = async () => {
@@ -173,3 +173,10 @@ export class RegistryService implements IRegistryService {
     return Registry__factory.connect(address, this.signerOrProvider)
   }
 }
+
+const overwriteCoins = (coins: Coin[]): Coin[] =>
+  coins.map((coin) => {
+    const overwrite = OVERWRITE_COINS[coin.address]
+    if (!overwrite) return coin
+    return { ...coin, ...overwrite } as Coin
+  })
