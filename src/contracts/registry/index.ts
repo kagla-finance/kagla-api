@@ -3,6 +3,7 @@ import { NATIVE_ASSET_INFO } from 'src/constants'
 import { Coin } from 'src/models/coin'
 import { equals, isNativeAsset, notNativeAsset } from 'src/utils/address'
 import { unique } from 'src/utils/array'
+import { overwriteCoins } from 'src/utils/coin'
 import { IAddressProvider } from '../addressProvider'
 import { ERC20ViewFunction, IERC20MultiCallService } from '../erc20'
 import { IMultiCallService } from '../multiCall'
@@ -111,7 +112,7 @@ export class RegistryService implements IRegistryService {
     }))
     if (nativeAssetIndex < 0) return res
     res.splice(nativeAssetIndex, 0, NATIVE_ASSET_INFO)
-    return res
+    return overwriteCoins(res)
   }
 
   listUnderlyingCoins: IRegistryService['listUnderlyingCoins'] = async () => {
@@ -128,7 +129,7 @@ export class RegistryService implements IRegistryService {
     }))
     if (nativeAssetIndex < 0) return res
     res.splice(nativeAssetIndex, 0, NATIVE_ASSET_INFO)
-    return res
+    return overwriteCoins(res)
   }
 
   listLPTokens: IRegistryService['listLPTokens'] = async () => {

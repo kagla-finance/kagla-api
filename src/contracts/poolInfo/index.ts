@@ -14,6 +14,7 @@ import {
 import { IStatsService } from 'src/storage/Stats'
 import { equals, isNativeAsset, notNativeAsset } from 'src/utils/address'
 import { filterFalsy } from 'src/utils/array'
+import { overwriteCoins } from 'src/utils/coin'
 import { BigNumberJs, BN_ZERO, normalizeBn } from 'src/utils/number'
 import { addressOr, bigNumberOr } from 'src/utils/optional'
 import { ValueOf } from 'type-fest'
@@ -157,18 +158,22 @@ export class PoolInfoService implements IPoolInfoService {
       pool: {
         ...pool,
         address,
-        coins: pool.coins.map((coin) => {
-          const coinDatum = coinData[coin.address]
-          if (isNativeAsset(coin.address))
-            return { ...coin, ...NATIVE_ASSET_INFO }
-          return { ...coin, ...coinDatum }
-        }),
-        underlyingCoins: pool.underlyingCoins.map((coin) => {
-          const coinDatum = coinData[coin.address]
-          if (isNativeAsset(coin.address))
-            return { ...coin, ...NATIVE_ASSET_INFO }
-          return { ...coin, ...coinDatum }
-        }),
+        coins: overwriteCoins(
+          pool.coins.map((coin) => {
+            const coinDatum = coinData[coin.address]
+            if (isNativeAsset(coin.address))
+              return { ...coin, ...NATIVE_ASSET_INFO }
+            return { ...coin, ...coinDatum }
+          }),
+        ),
+        underlyingCoins: overwriteCoins(
+          pool.underlyingCoins.map((coin) => {
+            const coinDatum = coinData[coin.address]
+            if (isNativeAsset(coin.address))
+              return { ...coin, ...NATIVE_ASSET_INFO }
+            return { ...coin, ...coinDatum }
+          }),
+        ),
         apy: apyStats?.apy.day[pool.name]?.toString(),
       },
     }
