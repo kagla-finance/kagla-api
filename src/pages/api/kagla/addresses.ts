@@ -1,6 +1,6 @@
-import { FallbackProvider, JsonRpcProvider } from '@ethersproject/providers'
 import { getProtocolConfig } from 'src/config'
 import { AddressProviderService } from 'src/contracts/addressProvider'
+import { defaultProvider } from 'src/factory'
 import { asHandler } from 'src/utils/api'
 /**
  * @swagger
@@ -27,13 +27,11 @@ import { asHandler } from 'src/utils/api'
  *
  */
 const handler = asHandler(async () => {
-  const { rpcUrls, addresses } = getProtocolConfig()
+  const { addresses } = getProtocolConfig()
   const service = AddressProviderService.new({
     addressProviderAddress: addresses.addressProvider,
     multiCallAddress: addresses.multiCall,
-    signerOrProvider: new FallbackProvider(
-      rpcUrls.map((url) => new JsonRpcProvider(url)),
-    ),
+    signerOrProvider: defaultProvider(),
   })
   return service.listAddresses()
 })

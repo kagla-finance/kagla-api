@@ -1,8 +1,8 @@
-import { FallbackProvider, JsonRpcProvider } from '@ethersproject/providers'
 import { ethers } from 'ethers'
 import { SelfAPICallService } from 'src/api/self'
 import { getProtocolConfig } from 'src/config'
 import { ERC20MultiCallService } from 'src/contracts/erc20'
+import { defaultProvider } from 'src/factory'
 import { isAddress } from 'src/utils/address'
 import { asHandler, cacheControl, RequestValidator } from 'src/utils/api'
 /**
@@ -74,12 +74,10 @@ const validator: RequestValidator<Parameters> = (request) => {
 
 const handler = asHandler(
   async ({ parameters }) => {
-    const { rpcUrls, addresses } = getProtocolConfig()
+    const { addresses } = getProtocolConfig()
     const service = ERC20MultiCallService.new({
       multiCallAddress: addresses.multiCall,
-      signerOrProvider: new FallbackProvider(
-        rpcUrls.map((url) => new JsonRpcProvider(url)),
-      ),
+      signerOrProvider: defaultProvider(),
     })
     if (parameters.tokenAddresses)
       return service.balances(parameters.owner, parameters.tokenAddresses)

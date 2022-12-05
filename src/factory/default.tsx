@@ -64,12 +64,9 @@ export const priceService = (chainId?: ChainId) =>
   diaAndArthSwapPriceService(chainId)
 
 export const defaultParameters = (chainId?: ChainId) => {
-  const { rpcUrls, addresses, storageEndpoint } = getProtocolConfig(chainId)
-  const signerOrProvider = new FallbackProvider(
-    rpcUrls.map((url) => new JsonRpcProvider(url)),
-  )
+  const { addresses, storageEndpoint } = getProtocolConfig(chainId)
   return {
-    signerOrProvider,
+    signerOrProvider: defaultProvider(chainId),
     storageEndpoint,
     multiCallAddress: addresses.multiCall,
     addressProviderAddress: addresses.addressProvider,
@@ -78,4 +75,11 @@ export const defaultParameters = (chainId?: ChainId) => {
     minterAddress: addresses.minter,
     diaAddress: addresses.diaOracle,
   }
+}
+
+export const defaultProvider = (chainId?: ChainId) => {
+  const { rpcUrls, privateRpcUrl } = getProtocolConfig(chainId)
+  return privateRpcUrl
+    ? new JsonRpcProvider(privateRpcUrl)
+    : new FallbackProvider(rpcUrls.map((url) => new JsonRpcProvider(url)))
 }

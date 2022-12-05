@@ -31,6 +31,7 @@ type ProtocolConfig = {
     assets: Partial<Record<AssetTypeValue, string>>
   }
   eolGauges?: string[]
+  privateRpcUrl?: string
 }
 
 export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
@@ -44,6 +45,8 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
       diaOracle: '0x35490A8AC7cD0Df5C4d7Ab4243A6B517133BcDB1',
     },
     rpcUrls: ['https://astar.public.blastapi.io'],
+    privateRpcUrl:
+      'https://astar.blastapi.io/6240b1c0-5128-42dc-b371-318e288106ed',
     arthswapDataProvider: {
       endpoint: 'https://arthswap-apr-api.vercel.app/api/graphql',
       quoteTokenAddress: '0xAeaaf0e2c81Af264101B9129C00F4440cCF0F720',

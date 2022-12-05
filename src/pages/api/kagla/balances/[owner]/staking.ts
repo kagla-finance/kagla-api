@@ -1,6 +1,6 @@
-import { FallbackProvider, JsonRpcProvider } from '@ethersproject/providers'
 import { getProtocolConfig } from 'src/config'
 import { GaugeService } from 'src/contracts/gauge'
+import { defaultProvider } from 'src/factory'
 import { isAddress } from 'src/utils/address'
 import { asHandler, cacheControl, RequestValidator } from 'src/utils/api'
 /**
@@ -57,13 +57,11 @@ const validator: RequestValidator<Parameters> = (request) => {
 
 const handler = asHandler(
   async ({ parameters }) => {
-    const { rpcUrls, addresses } = getProtocolConfig()
+    const { addresses } = getProtocolConfig()
     const service = GaugeService.new({
       multiCallAddress: addresses.multiCall,
       gaugeControllerAddress: addresses.gaugeController,
-      signerOrProvider: new FallbackProvider(
-        rpcUrls.map((url) => new JsonRpcProvider(url)),
-      ),
+      signerOrProvider: defaultProvider(),
     })
     return service.getStakingData(parameters.owner)
   },
