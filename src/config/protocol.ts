@@ -48,7 +48,7 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
     privateRpcUrl:
       'https://astar.blastapi.io/6240b1c0-5128-42dc-b371-318e288106ed',
     arthswapDataProvider: {
-      endpoint: 'https://arthswap-apr-api.vercel.app/api/graphql',
+      endpoint: 'https://arthswap-graphql.starlay.finance/api/graphql',
       quoteTokenAddress: '0xAeaaf0e2c81Af264101B9129C00F4440cCF0F720',
       assets: {
         [AssetType.KGL]: '0x257f1a047948f73158DaDd03eB84b34498bCDc60',

@@ -15,16 +15,6 @@ export type Scalars = {
   Float: number;
 };
 
-export type Apr = {
-  __typename?: 'Apr';
-  apr?: Maybe<Scalars['Float']>;
-  liquidity?: Maybe<Scalars['Int']>;
-  liquidityProvidingURL?: Maybe<Scalars['String']>;
-  lpName?: Maybe<Scalars['String']>;
-  multiplier?: Maybe<Scalars['Float']>;
-  updatedAt?: Maybe<Scalars['Float']>;
-};
-
 export type Pair = {
   __typename?: 'Pair';
   address: Scalars['String'];
@@ -53,15 +43,8 @@ export type PricesQueryInput = {
 
 export type Query = {
   __typename?: 'Query';
-  getApr?: Maybe<Apr>;
-  getAprs?: Maybe<Array<Maybe<Apr>>>;
   getPairs?: Maybe<Array<Pair>>;
   getPrices: Prices;
-};
-
-
-export type QueryGetAprArgs = {
-  liquidityPair?: InputMaybe<Scalars['String']>;
 };
 
 
