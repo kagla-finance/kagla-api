@@ -1,5 +1,5 @@
 import { AssetType, AssetTypeValue } from 'src/models/pool'
-import { ChainId, CHAIN_ID, DEFAULT_CHAIN_ID, isSupportedChain } from './chain'
+import { CHAIN_ID, ChainId, DEFAULT_CHAIN_ID, isSupportedChain } from './chain'
 import { getEolGauges } from './eolGauges'
 
 export const getProtocolConfig = (
@@ -55,7 +55,7 @@ export const PROTOCOL_CONFIG: Record<ChainId, ProtocolConfig> = {
         [AssetType.LAY]: '0xc4335B1b76fA6d52877b3046ECA68F6E708a27dd',
       },
     },
-    storageEndpoint: 'https://kagla-stats-astar.s3.amazonaws.com',
+    storageEndpoint: 'https://kagla-statistics.s3.amazonaws.com',
   },
   [CHAIN_ID.shiden]: {
     addresses: {
