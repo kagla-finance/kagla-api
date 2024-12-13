@@ -4,10 +4,10 @@ import { Coin } from 'src/models/coin'
 import { equals, isNativeAsset, notNativeAsset } from 'src/utils/address'
 import { unique } from 'src/utils/array'
 import { overwriteCoins } from 'src/utils/coin'
+import { Registry__factory } from '../__generated__/factories/Registry__factory'
 import { IAddressProvider } from '../addressProvider'
 import { ERC20ViewFunction, IERC20MultiCallService } from '../erc20'
 import { IMultiCallService } from '../multiCall'
-import { Registry__factory } from '../__generated__/factories/Registry__factory'
 
 export type IRegistryService = {
   listCoins: () => Promise<Coin[]>
@@ -155,7 +155,11 @@ export class RegistryService implements IRegistryService {
       functionName: 'pool_list',
       count: numOfPools.toNumber(),
     })
-    return poolAddresses.flatMap((e) => e)
+    return poolAddresses
+      .flatMap((e) => e)
+      .filter(
+        (e) => e.toLowerCase() !== '0xdccafcda0953b2948b40e0cdc94c900f0d2d6368',
+      )
   }
 
   getGauges: IRegistryService['getGauges'] = async (poolAddress) => {
